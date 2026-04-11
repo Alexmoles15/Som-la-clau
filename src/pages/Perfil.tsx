@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Perfil.module.css";
+import { getApiUrl } from "../api/api";
 
 type Usuario = {
   id?: number;

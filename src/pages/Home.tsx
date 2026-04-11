@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import fondoLlaves from "../assets/fondo-llaves.png";
@@ -11,6 +10,7 @@ import {
   formatearPrecio,
   normalizarListaServicios,
 } from "../utils/servicios";
+import { useEffect, useMemo, useState } from "react";
 
 function Home() {
   const { t } = useLanguage();

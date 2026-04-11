@@ -11,6 +11,7 @@ import {
   normalizarListaServicios,
 } from "../utils/servicios";
 import { useEffect, useMemo, useState } from "react";
+import { getApiUrl } from "../api/api";
 
 function Home() {
   const { t } = useLanguage();
@@ -23,9 +24,7 @@ function Home() {
       setLoadingServicios(true);
 
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/servicios/activos"
-        );
+        const response = await fetch(getApiUrl("/servicios/activos"));
 
         if (!response.ok) {
           throw new Error("No se pudieron cargar los servicios");

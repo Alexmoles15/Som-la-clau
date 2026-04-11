@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import fondoLlaves from "../assets/fondo-llaves.png";
 import pattern from "../styles/patternPage.module.css";
 import css from "../styles/Servicios.module.css";
+import { getApiUrl } from "../api/api";
 
 import type { Servicio, ServicioSeleccionado } from "../types/servicio";
 import type { UsuarioLogueado } from "../types/usuario";
@@ -118,8 +119,8 @@ function Servicios() {
 
       try {
         const url = esAdmin
-          ? "http://localhost:8080/api/servicios"
-          : "http://localhost:8080/api/servicios/activos";
+          ? getApiUrl("/servicios")
+          : getApiUrl("/servicios/activos");
 
         const response = await fetch(url);
 
@@ -314,7 +315,7 @@ ${mensajeExtra || "Sin observaciones"}`;
         orden: index + 1,
       }));
 
-      const response = await fetch("http://localhost:8080/api/servicios/reordenar", {
+      const response = await fetch(getApiUrl("/servicios/reordenar"), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -350,7 +351,7 @@ ${mensajeExtra || "Sin observaciones"}`;
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/email/presupuesto", {
+      const response = await fetch(getApiUrl("/email/presupuesto"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -432,7 +433,7 @@ ${mensajeExtra || "Sin observaciones"}`;
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/servicios/${id}`, {
+      const response = await fetch(getApiUrl(`/servicios/${id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -482,7 +483,7 @@ ${mensajeExtra || "Sin observaciones"}`;
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/servicios", {
+      const response = await fetch(getApiUrl("/servicios"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

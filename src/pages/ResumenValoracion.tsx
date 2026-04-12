@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 type Servicio = {
   id: number;
@@ -52,6 +53,8 @@ function ResumenValoracion({
   onEnviarPorWhatsApp,
   resumenRef,
 }: Props) {
+  const { t } = useLanguage();
+
   if (resumenSeleccionados.length === 0) return null;
 
   return (
@@ -68,11 +71,12 @@ function ResumenValoracion({
                 <div>
                   <span style={styles.selectedName}>{servicio.nombre}</span>
                   <div style={styles.selectedSubline}>
-                    Cantidad: {cantidad}
+                    {t.resumenValoracion.quantityLabel}: {cantidad}
                     {servicio.nombre.trim().toLowerCase() ===
                       "cambio de cerraduras" &&
-                      " · 1ª puerta al precio base, siguientes a 45€"}
-                    {precioBase <= 0 && " · precio pendiente de configurar"}
+                      ` · ${t.resumenValoracion.lockChangeNote}`}
+                    {precioBase <= 0 &&
+                      ` · ${t.resumenValoracion.pricePending}`}
                   </div>
                 </div>
 
@@ -101,17 +105,16 @@ function ResumenValoracion({
         </div>
 
         <div style={styles.totalBox}>
-          <span style={styles.totalLabel}>Total aproximado:</span>
+          <span style={styles.totalLabel}>
+            {t.resumenValoracion.totalLabel}
+          </span>
           <span style={styles.totalValue}>{totalAproximado} €</span>
         </div>
 
-        <div style={styles.warningBox}>
-          Este precio es orientativo y no es definitivo. Falta sumar distancia,
-          desplazamiento, urgencia y la valoración final del trabajo.
-        </div>
+        <div style={styles.warningBox}>{t.resumenValoracion.warningBox}</div>
 
         <textarea
-          placeholder="Añade información extra si quieres (horario, dirección aproximada, problema concreto...)"
+          placeholder={t.resumenValoracion.extraMessagePlaceholder}
           style={styles.textarea}
           value={mensajeExtra}
           onChange={(e) => setMensajeExtra(e.target.value)}
@@ -119,19 +122,26 @@ function ResumenValoracion({
 
         <div style={styles.userBox}>
           <p style={styles.userText}>
-            <strong>Correo del usuario:</strong> {usuario?.email || "No disponible"}
+            <strong>{t.resumenValoracion.userEmail}:</strong>{" "}
+            {usuario?.email || t.resumenValoracion.notAvailable}
           </p>
           <p style={styles.userText}>
-            <strong>Teléfono del usuario:</strong> {usuario?.telefono || "No disponible"}
+            <strong>{t.resumenValoracion.userPhone}:</strong>{" "}
+            {usuario?.telefono || t.resumenValoracion.notAvailable}
           </p>
           <p style={styles.userText}>
-            <strong>Municipio:</strong> {usuario?.municipio || "No disponible"}
+            <strong>{t.resumenValoracion.userCity}:</strong>{" "}
+            {usuario?.municipio || t.resumenValoracion.notAvailable}
           </p>
         </div>
 
         <div style={styles.actions}>
-          <button type="button" style={styles.emailButton} onClick={onEnviarPorCorreo}>
-            Enviar valoración por correo
+          <button
+            type="button"
+            style={styles.emailButton}
+            onClick={onEnviarPorCorreo}
+          >
+            {t.resumenValoracion.emailButton}
           </button>
 
           <button
@@ -139,7 +149,7 @@ function ResumenValoracion({
             style={styles.whatsappButton}
             onClick={onEnviarPorWhatsApp}
           >
-            Enviar valoración por WhatsApp
+            {t.resumenValoracion.whatsappButton}
           </button>
         </div>
       </div>
@@ -270,32 +280,30 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   actions: {
     display: "flex",
-    gap: "14px",
+    gap: "12px",
     flexWrap: "wrap",
   },
   emailButton: {
     flex: 1,
-    minWidth: "240px",
-    padding: "15px",
+    minWidth: "220px",
+    padding: "14px",
+    borderRadius: "10px",
+    border: "none",
     backgroundColor: "#111",
     color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
     fontWeight: 700,
-    fontSize: "16px",
+    cursor: "pointer",
   },
   whatsappButton: {
     flex: 1,
-    minWidth: "240px",
-    padding: "15px",
+    minWidth: "220px",
+    padding: "14px",
+    borderRadius: "10px",
+    border: "none",
     backgroundColor: "#25D366",
     color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
     fontWeight: 700,
-    fontSize: "16px",
+    cursor: "pointer",
   },
 };
 

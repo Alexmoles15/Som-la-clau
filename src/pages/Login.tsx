@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getApiUrl } from "../api/api";
 import styles from "../styles/Login.module.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 type Usuario = {
   id?: number;
@@ -17,6 +18,7 @@ type Usuario = {
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
 
   const [modoRegistro, setModoRegistro] = useState(false);
 
@@ -61,14 +63,14 @@ function Login() {
       });
 
       if (!response.ok) {
-        throw new Error("Credenciales incorrectas");
+        throw new Error(t.login.errors.invalidCredentials);
       }
 
       const usuario: Usuario = await response.json();
       localStorage.setItem("usuario", JSON.stringify(usuario));
       navigate(from, { replace: true });
     } catch {
-      setError("Correo o contraseña incorrectos.");
+      setError(t.login.errors.invalidCredentials);
     } finally {
       setLoading(false);
     }
@@ -80,7 +82,7 @@ function Login() {
     setError("");
 
     if (password.trim().length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres.");
+      setError(t.login.errors.passwordMinLength);
       setLoading(false);
       return;
     }
@@ -103,7 +105,7 @@ function Login() {
       });
 
       if (!response.ok) {
-        throw new Error("No se pudo crear la cuenta");
+        throw new Error(t.login.errors.createAccountFailed);
       }
 
       const usuario: Usuario = await response.json();
@@ -111,7 +113,7 @@ function Login() {
       limpiarFormulario();
       navigate(from, { replace: true });
     } catch {
-      setError("No se pudo crear la cuenta.");
+      setError(t.login.errors.createAccountFailed);
     } finally {
       setLoading(false);
     }
@@ -121,32 +123,32 @@ function Login() {
     <main className={styles.page}>
       <div className={styles.wrapper}>
         <section className={styles.leftPanel}>
-          <div className={styles.brandBadge}>Mi Portal</div>
+          <div className={styles.brandBadge}>{t.login.brandBadge}</div>
 
           <h1 className={styles.heroTitle}>
-            {modoRegistro ? "Crea tu cuenta" : "Bienvenido de nuevo"}
+            {modoRegistro ? t.login.hero.registerTitle : t.login.hero.loginTitle}
           </h1>
 
           <p className={styles.heroText}>
             {modoRegistro
-              ? "Regístrate para continuar con tu solicitud de forma rápida, segura y sencilla."
-              : "Accede a tu cuenta para gestionar tus datos, solicitudes y trámites."}
+              ? t.login.hero.registerText
+              : t.login.hero.loginText}
           </p>
 
           <div className={styles.featureList}>
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
-              <span>Acceso rápido y seguro</span>
+              <span>{t.login.features.fastSecure}</span>
             </div>
 
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
-              <span>Gestión simple de solicitudes</span>
+              <span>{t.login.features.simpleRequests}</span>
             </div>
 
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
-              <span>Diseño claro y profesional</span>
+              <span>{t.login.features.clearProfessional}</span>
             </div>
           </div>
         </section>
@@ -164,7 +166,7 @@ function Login() {
                 !modoRegistro ? styles.tabButtonActive : ""
               }`}
             >
-              Iniciar sesión
+              {t.login.tabs.login}
             </button>
 
             <button
@@ -178,27 +180,27 @@ function Login() {
                 modoRegistro ? styles.tabButtonActive : ""
               }`}
             >
-              Crear cuenta
+              {t.login.tabs.register}
             </button>
           </div>
 
           <h2 className={styles.title}>
-            {modoRegistro ? "Crear usuario" : "Iniciar sesión"}
+            {modoRegistro ? t.login.registerTitle : t.login.loginTitle}
           </h2>
 
           <p className={styles.subtitle}>
             {modoRegistro
-              ? "Completa tus datos para crear una cuenta."
-              : "Introduce tus credenciales para acceder."}
+              ? t.login.registerSubtitle
+              : t.login.loginSubtitle}
           </p>
 
           {!modoRegistro ? (
             <form onSubmit={handleLogin} className={styles.form}>
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Correo electrónico</label>
+                <label className={styles.label}>{t.login.email}</label>
                 <input
                   type="email"
-                  placeholder="ejemplo@correo.com"
+                  placeholder={t.login.placeholders.loginEmail}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={styles.input}
@@ -208,10 +210,10 @@ function Login() {
               </div>
 
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Contraseña</label>
+                <label className={styles.label}>{t.login.password}</label>
                 <input
                   type="password"
-                  placeholder="Introduce tu contraseña"
+                  placeholder={t.login.placeholders.loginPassword}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.input}
@@ -223,17 +225,17 @@ function Login() {
               {error && <p className={styles.error}>{error}</p>}
 
               <button type="submit" className={styles.button} disabled={loading}>
-                {loading ? "Entrando..." : "Entrar"}
+                {loading ? t.login.buttons.loggingIn : t.login.buttons.login}
               </button>
             </form>
           ) : (
             <form onSubmit={handleRegistro} className={styles.form}>
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Nombre</label>
+                  <label className={styles.label}>{t.login.nombre}</label>
                   <input
                     type="text"
-                    placeholder="Tu nombre"
+                    placeholder={t.login.placeholders.nombre}
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                     className={styles.input}
@@ -243,10 +245,10 @@ function Login() {
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Apellidos</label>
+                  <label className={styles.label}>{t.login.apellidos}</label>
                   <input
                     type="text"
-                    placeholder="Tus apellidos"
+                    placeholder={t.login.placeholders.apellidos}
                     value={apellidos}
                     onChange={(e) => setApellidos(e.target.value)}
                     className={styles.input}
@@ -257,10 +259,10 @@ function Login() {
               </div>
 
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Correo electrónico</label>
+                <label className={styles.label}>{t.login.email}</label>
                 <input
                   type="email"
-                  placeholder="Tu correo"
+                  placeholder={t.login.placeholders.registerEmail}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={styles.input}
@@ -270,10 +272,10 @@ function Login() {
               </div>
 
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Contraseña</label>
+                <label className={styles.label}>{t.login.password}</label>
                 <input
                   type="password"
-                  placeholder="Crea una contraseña"
+                  placeholder={t.login.placeholders.registerPassword}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.input}
@@ -285,10 +287,10 @@ function Login() {
 
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Teléfono</label>
+                  <label className={styles.label}>{t.login.telefono}</label>
                   <input
                     type="text"
-                    placeholder="Tu teléfono"
+                    placeholder={t.login.placeholders.telefono}
                     value={telefono}
                     onChange={(e) => setTelefono(e.target.value)}
                     className={styles.input}
@@ -297,10 +299,10 @@ function Login() {
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Municipio</label>
+                  <label className={styles.label}>{t.login.municipio}</label>
                   <input
                     type="text"
-                    placeholder="Tu municipio"
+                    placeholder={t.login.placeholders.municipio}
                     value={municipio}
                     onChange={(e) => setMunicipio(e.target.value)}
                     className={styles.input}
@@ -310,10 +312,10 @@ function Login() {
               </div>
 
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Dirección</label>
+                <label className={styles.label}>{t.login.direccion}</label>
                 <input
                   type="text"
-                  placeholder="Tu dirección"
+                  placeholder={t.login.placeholders.direccion}
                   value={direccion}
                   onChange={(e) => setDireccion(e.target.value)}
                   className={styles.input}
@@ -324,7 +326,9 @@ function Login() {
               {error && <p className={styles.error}>{error}</p>}
 
               <button type="submit" className={styles.button} disabled={loading}>
-                {loading ? "Creando cuenta..." : "Crear cuenta"}
+                {loading
+                  ? t.login.buttons.creatingAccount
+                  : t.login.buttons.createAccount}
               </button>
             </form>
           )}

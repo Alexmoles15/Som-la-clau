@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getApiUrl } from "../api/api";
+import { useLanguage } from "../i18n/LanguageContext";
 
 function Registro() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [nombre, setNombre] = useState("");
   const [apellidos, setApellidos] = useState("");
@@ -21,7 +23,7 @@ function Registro() {
     setError("");
 
     if (password.trim().length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres.");
+      setError(t.registro.errors.passwordMinLength);
       return;
     }
 
@@ -50,7 +52,7 @@ function Registro() {
         throw new Error(
           typeof data === "string"
             ? data
-            : data?.message || "No se pudo crear la cuenta"
+            : data?.message || t.registro.errors.createAccountFailed
         );
       }
 
@@ -68,7 +70,9 @@ function Registro() {
       localStorage.setItem("usuario", JSON.stringify(usuario));
       navigate("/perfil");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo crear la cuenta.");
+      setError(
+        err instanceof Error ? err.message : t.registro.errors.createAccountFailed
+      );
     } finally {
       setLoading(false);
     }
@@ -77,17 +81,15 @@ function Registro() {
   return (
     <main style={styles.page}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Crear cuenta</h1>
-        <p style={styles.subtitle}>
-          Regístrate para empezar a usar la plataforma
-        </p>
+        <h1 style={styles.title}>{t.registro.pageTitle}</h1>
+        <p style={styles.subtitle}>{t.registro.pageSubtitle}</p>
 
         <form style={styles.form} onSubmit={handleRegistro}>
           <div style={styles.field}>
-            <label style={styles.label}>Nombre</label>
+            <label style={styles.label}>{t.registro.nombre}</label>
             <input
               type="text"
-              placeholder="Tu nombre"
+              placeholder={t.registro.placeholders.nombre}
               style={styles.input}
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
@@ -96,10 +98,10 @@ function Registro() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Apellidos</label>
+            <label style={styles.label}>{t.registro.apellidos}</label>
             <input
               type="text"
-              placeholder="Tus apellidos"
+              placeholder={t.registro.placeholders.apellidos}
               style={styles.input}
               value={apellidos}
               onChange={(e) => setApellidos(e.target.value)}
@@ -108,10 +110,10 @@ function Registro() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Email</label>
+            <label style={styles.label}>{t.registro.email}</label>
             <input
               type="email"
-              placeholder="ejemplo@email.com"
+              placeholder={t.registro.placeholders.email}
               style={styles.input}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -120,10 +122,10 @@ function Registro() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Contraseña</label>
+            <label style={styles.label}>{t.registro.password}</label>
             <input
               type="password"
-              placeholder="Crea una contraseña"
+              placeholder={t.registro.placeholders.password}
               style={styles.input}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -133,10 +135,10 @@ function Registro() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Teléfono</label>
+            <label style={styles.label}>{t.registro.telefono}</label>
             <input
               type="text"
-              placeholder="Tu teléfono"
+              placeholder={t.registro.placeholders.telefono}
               style={styles.input}
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
@@ -144,10 +146,10 @@ function Registro() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Dirección</label>
+            <label style={styles.label}>{t.registro.direccion}</label>
             <input
               type="text"
-              placeholder="Tu dirección"
+              placeholder={t.registro.placeholders.direccion}
               style={styles.input}
               value={direccion}
               onChange={(e) => setDireccion(e.target.value)}
@@ -155,10 +157,10 @@ function Registro() {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Municipio</label>
+            <label style={styles.label}>{t.registro.municipio}</label>
             <input
               type="text"
-              placeholder="Tu municipio"
+              placeholder={t.registro.placeholders.municipio}
               style={styles.input}
               value={municipio}
               onChange={(e) => setMunicipio(e.target.value)}
@@ -168,14 +170,14 @@ function Registro() {
           {error && <p style={styles.error}>{error}</p>}
 
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? "Creando cuenta..." : "Crear cuenta"}
+            {loading ? t.registro.buttons.creating : t.registro.buttons.create}
           </button>
         </form>
 
         <p style={styles.footer}>
-          ¿Ya tienes cuenta?{" "}
+          {t.registro.footerText}{" "}
           <Link to="/login" style={styles.link}>
-            Inicia sesión
+            {t.registro.footerLink}
           </Link>
         </p>
       </div>

@@ -86,7 +86,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch(getApiUrl("/usuarios/registro"), {
+      const response = await fetch(getApiUrl("/auth/register"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

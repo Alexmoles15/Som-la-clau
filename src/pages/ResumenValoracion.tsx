@@ -1,5 +1,6 @@
 import React from "react";
 import { useLanguage } from "../i18n/LanguageContext";
+import css from "../styles/ResumenValoracion.module.css";
 
 type Servicio = {
   id: number;
@@ -61,16 +62,16 @@ function ResumenValoracion({
     <section
       key={`${resumenSeleccionados.length}-${totalAproximado}`}
       ref={resumenRef}
-      style={styles.summarySection}
+      className={css.summarySection}
     >
-      <div style={styles.summaryBox}>
-        <div style={styles.selectedList}>
+      <div className={css.summaryBox}>
+        <div className={css.selectedList}>
           {resumenSeleccionados.map(
             ({ servicio, cantidad, precioBase, totalServicio }) => (
-              <div key={servicio.id} style={styles.selectedItem}>
+              <div key={servicio.id} className={css.selectedItem}>
                 <div>
-                  <span style={styles.selectedName}>{servicio.nombre}</span>
-                  <div style={styles.selectedSubline}>
+                  <span className={css.selectedName}>{servicio.nombre}</span>
+                  <div className={css.selectedSubline}>
                     {t.resumenValoracion.quantityLabel}: {cantidad}
                     {servicio.nombre.trim().toLowerCase() ===
                       "cambio de cerraduras" &&
@@ -80,65 +81,65 @@ function ResumenValoracion({
                   </div>
                 </div>
 
-                <div style={styles.quantityControls}>
+                <div className={css.quantityControls}>
                   <button
                     type="button"
-                    style={styles.qtyButton}
+                    className={css.qtyButton}
                     onClick={() => onDisminuir(servicio.id)}
                   >
                     −
                   </button>
-                  <span style={styles.qtyValue}>{cantidad}</span>
+                  <span className={css.qtyValue}>{cantidad}</span>
                   <button
                     type="button"
-                    style={styles.qtyButton}
+                    className={css.qtyButton}
                     onClick={() => onAumentar(servicio)}
                   >
                     +
                   </button>
                 </div>
 
-                <span style={styles.selectedPrice}>{totalServicio} €</span>
+                <span className={css.selectedPrice}>{totalServicio} €</span>
               </div>
             )
           )}
         </div>
 
-        <div style={styles.totalBox}>
-          <span style={styles.totalLabel}>
+        <div className={css.totalBox}>
+          <span className={css.totalLabel}>
             {t.resumenValoracion.totalLabel}
           </span>
-          <span style={styles.totalValue}>{totalAproximado} €</span>
+          <span className={css.totalValue}>{totalAproximado} €</span>
         </div>
 
-        <div style={styles.warningBox}>{t.resumenValoracion.warningBox}</div>
+        <div className={css.warningBox}>{t.resumenValoracion.warningBox}</div>
 
         <textarea
           placeholder={t.resumenValoracion.extraMessagePlaceholder}
-          style={styles.textarea}
+          className={css.textarea}
           value={mensajeExtra}
           onChange={(e) => setMensajeExtra(e.target.value)}
         />
 
-        <div style={styles.userBox}>
-          <p style={styles.userText}>
+        <div className={css.userBox}>
+          <p className={css.userText}>
             <strong>{t.resumenValoracion.userEmail}:</strong>{" "}
             {usuario?.email || t.resumenValoracion.notAvailable}
           </p>
-          <p style={styles.userText}>
+          <p className={css.userText}>
             <strong>{t.resumenValoracion.userPhone}:</strong>{" "}
             {usuario?.telefono || t.resumenValoracion.notAvailable}
           </p>
-          <p style={styles.userText}>
+          <p className={css.userText}>
             <strong>{t.resumenValoracion.userCity}:</strong>{" "}
             {usuario?.municipio || t.resumenValoracion.notAvailable}
           </p>
         </div>
 
-        <div style={styles.actions}>
+        <div className={css.actions}>
           <button
             type="button"
-            style={styles.emailButton}
+            className={css.emailButton}
             onClick={onEnviarPorCorreo}
           >
             {t.resumenValoracion.emailButton}
@@ -146,7 +147,7 @@ function ResumenValoracion({
 
           <button
             type="button"
-            style={styles.whatsappButton}
+            className={css.whatsappButton}
             onClick={onEnviarPorWhatsApp}
           >
             {t.resumenValoracion.whatsappButton}
@@ -156,155 +157,5 @@ function ResumenValoracion({
     </section>
   );
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-  summarySection: {
-    marginBottom: "40px",
-  },
-  summaryBox: {
-    backgroundColor: "white",
-    borderRadius: "16px",
-    padding: "20px",
-    boxShadow: "0 10px 24px rgba(0,0,0,0.1)",
-    maxWidth: "820px",
-    margin: "0 auto",
-  },
-  selectedList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-    marginBottom: "18px",
-  },
-  selectedItem: {
-    display: "grid",
-    gridTemplateColumns: "1fr auto auto",
-    alignItems: "center",
-    padding: "12px 14px",
-    backgroundColor: "#f8f8f8",
-    borderRadius: "10px",
-    gap: "12px",
-  },
-  selectedName: {
-    fontWeight: 600,
-    color: "#111",
-    display: "block",
-  },
-  selectedSubline: {
-    fontSize: "13px",
-    color: "#666",
-    marginTop: "4px",
-  },
-  selectedPrice: {
-    fontWeight: 700,
-    color: "#c1121f",
-    whiteSpace: "nowrap",
-    minWidth: "60px",
-    textAlign: "right",
-  },
-  quantityControls: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-  },
-  qtyButton: {
-    width: "32px",
-    height: "32px",
-    borderRadius: "8px",
-    border: "none",
-    backgroundColor: "#111",
-    color: "white",
-    fontSize: "18px",
-    fontWeight: 700,
-    cursor: "pointer",
-  },
-  qtyValue: {
-    minWidth: "24px",
-    textAlign: "center",
-    fontWeight: 700,
-    color: "#111",
-  },
-  totalBox: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "16px 0",
-    borderTop: "1px solid #e5e5e5",
-    borderBottom: "1px solid #e5e5e5",
-    marginBottom: "16px",
-    gap: "12px",
-  },
-  totalLabel: {
-    fontSize: "18px",
-    fontWeight: 700,
-    color: "#111",
-  },
-  totalValue: {
-    fontSize: "24px",
-    fontWeight: 800,
-    color: "#c1121f",
-    whiteSpace: "nowrap",
-  },
-  warningBox: {
-    backgroundColor: "#fff3cd",
-    color: "#7a5a00",
-    border: "1px solid #ffe69c",
-    borderRadius: "12px",
-    padding: "14px",
-    lineHeight: 1.6,
-    marginBottom: "16px",
-    fontWeight: 600,
-    fontSize: "14px",
-  },
-  textarea: {
-    width: "100%",
-    minHeight: "100px",
-    padding: "14px",
-    borderRadius: "10px",
-    border: "1px solid #ddd",
-    fontSize: "16px",
-    resize: "vertical",
-    marginBottom: "16px",
-    outline: "none",
-    boxSizing: "border-box",
-  },
-  userBox: {
-    backgroundColor: "#f8f8f8",
-    borderRadius: "12px",
-    padding: "14px",
-    marginBottom: "16px",
-  },
-  userText: {
-    margin: "6px 0",
-    color: "#333",
-    lineHeight: 1.5,
-  },
-  actions: {
-    display: "flex",
-    gap: "12px",
-    flexWrap: "wrap",
-  },
-  emailButton: {
-    flex: 1,
-    minWidth: "220px",
-    padding: "14px",
-    borderRadius: "10px",
-    border: "none",
-    backgroundColor: "#111",
-    color: "white",
-    fontWeight: 700,
-    cursor: "pointer",
-  },
-  whatsappButton: {
-    flex: 1,
-    minWidth: "220px",
-    padding: "14px",
-    borderRadius: "10px",
-    border: "none",
-    backgroundColor: "#25D366",
-    color: "white",
-    fontWeight: 700,
-    cursor: "pointer",
-  },
-};
 
 export default ResumenValoracion;

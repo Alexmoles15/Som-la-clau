@@ -290,3 +290,54 @@
 .sideCta {
   margin-top: 20px;
 }
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 18px 14px 28px;
+  }
+
+  .hero,
+  .urgentBox,
+  .formBox,
+  .infoBox {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .heroText,
+  .formSubtitle,
+  .infoText,
+  .infoLink {
+    font-size: 15px;
+  }
+
+  .urgentTitle,
+  .formTitle,
+  .infoTitle {
+    font-size: 24px;
+  }
+
+  .phone {
+    font-size: 26px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .sideCtaButton,
+  .button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

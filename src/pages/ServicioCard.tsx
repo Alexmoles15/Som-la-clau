@@ -1,5 +1,6 @@
 import React from "react";
 import { useLanguage } from "../i18n/LanguageContext";
+import css from "../styles/ServicioCard.module.css";
 
 type Servicio = {
   id: number;
@@ -97,11 +98,9 @@ function ServicioCard({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      style={{
-        ...styles.card,
-        ...(seleccionado ? styles.cardSelected : {}),
-        ...(esAdmin ? styles.adminDraggableCard : {}),
-      }}
+      className={`${css.card} ${seleccionado ? css.cardSelected : ""} ${
+        esAdmin ? css.adminDraggableCard : ""
+      }`}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-8px) scale(1.03)";
         e.currentTarget.style.boxShadow = "0 20px 45px rgba(0,0,0,0.2)";
@@ -114,24 +113,24 @@ function ServicioCard({
       }}
     >
       <div
+        className={css.image}
         style={{
-          ...styles.image,
           backgroundImage: `url(${servicio.imagenUrl || imagenFallback})`,
         }}
       >
-        <div style={styles.overlay}></div>
-        <h3 style={styles.imageTitle}>{servicio.nombre}</h3>
+        <div className={css.overlay}></div>
+        <h3 className={css.imageTitle}>{servicio.nombre}</h3>
       </div>
 
-      <div style={styles.content}>
-        <p style={styles.desc}>{servicio.descripcion}</p>
+      <div className={css.content}>
+        <p className={css.desc}>{servicio.descripcion}</p>
 
-        <div style={styles.priceBlock}>
-          <p style={styles.price}>
+        <div className={css.priceBlock}>
+          <p className={css.price}>
             {formatearPrecio(servicio.precioBase, servicio.urgente, t)}
           </p>
 
-          <p style={styles.specialNote}>
+          <p className={css.specialNote}>
             {servicio.nombre.trim().toLowerCase() === "cambio de cerraduras"
               ? t.servicioCard.lockChangeNote
               : "\u00A0"}
@@ -139,27 +138,27 @@ function ServicioCard({
         </div>
 
         {esAdmin && !estaEditando && (
-          <p style={styles.dragHint}>{t.servicioCard.adminDragHint}</p>
+          <p className={css.dragHint}>{t.servicioCard.adminDragHint}</p>
         )}
 
         {!seleccionado ? (
-          <button type="button" style={styles.selectButton} onClick={onToggle}>
+          <button type="button" className={css.selectButton} onClick={onToggle}>
             {t.servicioCard.addToQuote}
           </button>
         ) : (
-          <div style={styles.cardControls}>
-            <div style={styles.cardQuantityBox}>
+          <div className={css.cardControls}>
+            <div className={css.cardQuantityBox}>
               <button
                 type="button"
-                style={styles.qtyButton}
+                className={css.qtyButton}
                 onClick={onDisminuir}
               >
                 −
               </button>
-              <span style={styles.qtyValue}>{cantidad}</span>
+              <span className={css.qtyValue}>{cantidad}</span>
               <button
                 type="button"
-                style={styles.qtyButton}
+                className={css.qtyButton}
                 onClick={onAumentar}
               >
                 +
@@ -168,7 +167,7 @@ function ServicioCard({
 
             <button
               type="button"
-              style={{ ...styles.selectButton, ...styles.removeButton }}
+              className={`${css.selectButton} ${css.removeButton}`}
               onClick={onToggle}
             >
               {t.servicioCard.removeFromQuote}
@@ -179,7 +178,7 @@ function ServicioCard({
         {esAdmin && !estaEditando && (
           <button
             type="button"
-            style={styles.adminButton}
+            className={css.adminButton}
             onClick={onEmpezarEdicion}
           >
             {t.servicioCard.editService}
@@ -187,11 +186,11 @@ function ServicioCard({
         )}
 
         {esAdmin && estaEditando && (
-          <div style={styles.adminEditBox}>
+          <div className={css.adminEditBox}>
             <input
               value={formAdmin.nombre}
               onChange={(e) => onChangeFormAdmin({ nombre: e.target.value })}
-              style={styles.adminInput}
+              className={css.adminInput}
               placeholder={t.servicioCard.placeholders.nombre}
             />
 
@@ -200,7 +199,7 @@ function ServicioCard({
               onChange={(e) =>
                 onChangeFormAdmin({ descripcion: e.target.value })
               }
-              style={styles.adminTextarea}
+              className={css.adminTextarea}
               placeholder={t.servicioCard.placeholders.descripcion}
             />
 
@@ -209,7 +208,7 @@ function ServicioCard({
               onChange={(e) =>
                 onChangeFormAdmin({ precioBase: e.target.value })
               }
-              style={styles.adminInput}
+              className={css.adminInput}
               placeholder={t.servicioCard.placeholders.precioBase}
               type="number"
             />
@@ -219,12 +218,12 @@ function ServicioCard({
               onChange={(e) =>
                 onChangeFormAdmin({ imagenUrl: e.target.value })
               }
-              style={styles.adminInput}
+              className={css.adminInput}
               placeholder={t.servicioCard.placeholders.imagenUrl}
               type="text"
             />
 
-            <label style={styles.adminCheck}>
+            <label className={css.adminCheck}>
               <input
                 type="checkbox"
                 checked={formAdmin.urgente}
@@ -235,7 +234,7 @@ function ServicioCard({
               {t.servicioCard.urgentCheckbox}
             </label>
 
-            <label style={styles.adminCheck}>
+            <label className={css.adminCheck}>
               <input
                 type="checkbox"
                 checked={formAdmin.activo}
@@ -246,10 +245,10 @@ function ServicioCard({
               {t.servicioCard.activeCheckbox}
             </label>
 
-            <div style={styles.adminButtonsRow}>
+            <div className={css.adminButtonsRow}>
               <button
                 type="button"
-                style={styles.adminButton}
+                className={css.adminButton}
                 onClick={onGuardar}
               >
                 {t.servicioCard.save}
@@ -257,7 +256,7 @@ function ServicioCard({
 
               <button
                 type="button"
-                style={styles.adminCancelButton}
+                className={css.adminCancelButton}
                 onClick={onCancelarEdicion}
               >
                 {t.servicioCard.cancel}
@@ -269,183 +268,5 @@ function ServicioCard({
     </div>
   );
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-  card: {
-    backgroundColor: "white",
-    borderRadius: "20px",
-    overflow: "hidden",
-    boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
-    transition: "all 0.25s ease",
-    cursor: "pointer",
-  },
-  cardSelected: {
-    outline: "3px solid #c1121f",
-    transform: "translateY(-4px)",
-  },
-  adminDraggableCard: {
-    userSelect: "none",
-  },
-  image: {
-    height: "260px",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    position: "relative",
-    display: "flex",
-    alignItems: "flex-end",
-    padding: "22px",
-  },
-  overlay: {
-    position: "absolute",
-    inset: 0,
-    background: "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1))",
-  },
-  imageTitle: {
-    position: "relative",
-    color: "white",
-    fontSize: "25px",
-    fontWeight: 700,
-    zIndex: 1,
-  },
-  content: {
-    padding: "26px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "210px",
-  },
-  desc: {
-    color: "#555",
-    marginBottom: "15px",
-    fontSize: "16px",
-    lineHeight: 1.5,
-  },
-  priceBlock: {
-    marginBottom: "18px",
-    minHeight: "48px",
-  },
-  price: {
-    fontWeight: "bold",
-    color: "#c1121f",
-    marginBottom: "8px",
-    fontSize: "20px",
-  },
-  specialNote: {
-    fontSize: "14px",
-    color: "#666",
-    minHeight: "18px",
-    margin: 0,
-  },
-  dragHint: {
-    fontSize: "12px",
-    color: "#666",
-    marginTop: "4px",
-    marginBottom: "10px",
-  },
-  selectButton: {
-    width: "100%",
-    textAlign: "center",
-    backgroundColor: "#111",
-    color: "white",
-    padding: "14px",
-    borderRadius: "10px",
-    textDecoration: "none",
-    fontWeight: 700,
-    border: "none",
-    cursor: "pointer",
-    fontSize: "15px",
-    marginTop: "auto",
-  },
-  removeButton: {
-    backgroundColor: "#c1121f",
-  },
-  cardControls: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-    marginTop: "auto",
-  },
-  cardQuantityBox: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "12px",
-  },
-  qtyButton: {
-    width: "32px",
-    height: "32px",
-    borderRadius: "8px",
-    border: "none",
-    backgroundColor: "#111",
-    color: "white",
-    fontSize: "18px",
-    fontWeight: 700,
-    cursor: "pointer",
-  },
-  qtyValue: {
-    minWidth: "24px",
-    textAlign: "center",
-    fontWeight: 700,
-    color: "#111",
-  },
-  adminEditBox: {
-    marginTop: "16px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  adminInput: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "14px",
-  },
-  adminTextarea: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "14px",
-    minHeight: "90px",
-    resize: "vertical",
-  },
-  adminCheck: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    fontSize: "14px",
-    color: "#333",
-  },
-  adminButtonsRow: {
-    display: "flex",
-    gap: "10px",
-  },
-  adminButton: {
-    width: "100%",
-    textAlign: "center",
-    backgroundColor: "#111",
-    color: "white",
-    padding: "12px",
-    borderRadius: "10px",
-    textDecoration: "none",
-    fontWeight: 700,
-    border: "none",
-    cursor: "pointer",
-    fontSize: "14px",
-    marginTop: "10px",
-  },
-  adminCancelButton: {
-    width: "100%",
-    textAlign: "center",
-    backgroundColor: "#e5e5e5",
-    color: "#111",
-    padding: "12px",
-    borderRadius: "10px",
-    textDecoration: "none",
-    fontWeight: 700,
-    border: "none",
-    cursor: "pointer",
-    fontSize: "14px",
-    marginTop: "10px",
-  },
-};
 
 export default ServicioCard;

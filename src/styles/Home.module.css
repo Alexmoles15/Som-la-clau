@@ -606,3 +606,126 @@
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
+
+@media (max-width: 1200px) {
+  .statsSection {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .servicesPreviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .trustSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 0 16px 24px 16px;
+  }
+
+  .hero {
+    padding: 34px 20px 38px 20px;
+    border-radius: 22px;
+  }
+
+  .heroContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+  }
+
+  .right {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .heroRightColumn {
+    width: 100%;
+  }
+
+  .logoCard {
+    width: 210px;
+    height: 210px;
+  }
+
+  .title {
+    font-size: 38px;
+  }
+
+  .subtitle {
+    font-size: 17px;
+  }
+
+  .phone {
+    font-size: 32px;
+  }
+
+  .featuresSection {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionTitle {
+    font-size: 30px;
+  }
+
+  .ctaTitle {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .statsSection,
+  .servicesPreviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .miniHighlights {
+    flex-direction: column;
+  }
+
+  .miniHighlightItem {
+    min-width: 100%;
+  }
+
+  .buttons,
+  .ctaButtons,
+  .servicesPreviewActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .servicesPreviewButton,
+  .ctaButton,
+  .ctaSecondaryButton {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .sectionTitle,
+  .ctaTitle {
+    font-size: 26px;
+  }
+
+  .servicePreviewBody,
+  .featureCard,
+  .trustLeft,
+  .trustCardDark,
+  .servicesPreviewSection {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .servicePreviewText {
+    min-height: auto;
+  }
+}

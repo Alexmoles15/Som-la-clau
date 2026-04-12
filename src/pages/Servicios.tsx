@@ -4,6 +4,7 @@ import fondoLlaves from "../assets/fondo-llaves.png";
 import pattern from "../styles/patternPage.module.css";
 import css from "../styles/Servicios.module.css";
 import { getApiUrl } from "../api/api";
+import { useLanguage } from "../i18n/LanguageContext";
 
 import type { Servicio, ServicioSeleccionado } from "../types/servicio";
 import type { UsuarioLogueado } from "../types/usuario";
@@ -22,6 +23,7 @@ const WHATSAPP_DESTINO = "34667572011";
 
 function Servicios() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [seleccionados, setSeleccionados] = useState<ServicioSeleccionado[]>([]);
@@ -125,20 +127,20 @@ function Servicios() {
         const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error("No se pudieron cargar los servicios");
+          throw new Error(t.servicios.errors.loadServices);
         }
 
         const data = await response.json();
         setServicios(normalizarListaServicios(data));
       } catch {
-        setError("No se pudieron cargar los servicios en este momento.");
+        setError(t.servicios.errors.loadServicesNow);
       } finally {
         setLoading(false);
       }
     };
 
     cargarServicios();
-  }, [esAdmin]);
+  }, [esAdmin, t.servicios.errors.loadServices, t.servicios.errors.loadServicesNow]);
 
   useEffect(() => {
     sessionStorage.setItem("servicios_seleccionados", JSON.stringify(seleccionados));
@@ -279,7 +281,7 @@ function Servicios() {
         ? resumenSeleccionados
             .map(({ servicio, cantidad, precioBase, totalServicio }) => {
               if (servicio.nombre.trim().toLowerCase() === "cambio de cerraduras") {
-                return `- ${servicio.nombre}: ${cantidad} puerta(s) = ${totalServicio}€ (1ª a ${precioBase}€, siguientes a 45€)`;
+                return `- ${servicio.nombre}: ${cantidad} ${t.servicios.quoteMessage.doorsSuffix} = ${totalServicio}€ (${t.servicios.quoteMessage.firstDoorAt} ${precioBase}€, ${t.servicios.quoteMessage.nextDoorsAt} 45€)`;
               }
 
               return `- ${servicio.nombre}: ${cantidad} x ${precioBase}€ = ${totalServicio}€`;
@@ -287,26 +289,26 @@ function Servicios() {
             .join("\n")
         : "";
 
-    return `Hola, solicito una valoración aproximada.
+    return `${t.servicios.quoteMessage.greeting}
 
-Datos del cliente:
-Nombre: ${usuario?.nombre || "No disponible"} ${usuario?.apellidos || ""}
-Correo: ${usuario?.email || "No disponible"}
-Teléfono: ${usuario?.telefono || "No disponible"}
-Municipio: ${usuario?.municipio || "No disponible"}
-Dirección: ${usuario?.direccion || "No disponible"}
+${t.servicios.quoteMessage.clientData}:
+${t.servicios.quoteMessage.name}: ${usuario?.nombre || t.servicios.quoteMessage.notAvailable} ${usuario?.apellidos || ""}
+${t.servicios.quoteMessage.email}: ${usuario?.email || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.phone}: ${usuario?.telefono || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.city}: ${usuario?.municipio || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.address}: ${usuario?.direccion || t.servicios.quoteMessage.notAvailable}
 
-Servicios seleccionados:
+${t.servicios.quoteMessage.selectedServices}:
 ${serviciosTexto}
 
-Total aproximado: ${totalAproximado}€
+${t.servicios.quoteMessage.totalApprox}: ${totalAproximado}€
 
-Importante:
-Este importe es orientativo y no es definitivo. Puede variar según la distancia, el desplazamiento, la urgencia y la valoración real del trabajo.
+${t.servicios.quoteMessage.important}:
+${t.servicios.quoteMessage.importantText}
 
-Información adicional:
-${mensajeExtra || "Sin observaciones"}`;
-  }, [resumenSeleccionados, usuario, mensajeExtra, totalAproximado]);
+${t.servicios.quoteMessage.additionalInfo}:
+${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
+  }, [resumenSeleccionados, usuario, mensajeExtra, totalAproximado, t.servicios.quoteMessage]);
 
   const guardarOrdenServicios = async (listaServicios: Servicio[]) => {
     try {
@@ -325,20 +327,22 @@ ${mensajeExtra || "Sin observaciones"}`;
 
       if (!response.ok) {
         const texto = await response.text();
-        throw new Error(texto || "No se pudo guardar el nuevo orden");
+        throw new Error(texto || t.servicios.errors.reorderFailed);
       }
 
       const data = await response.json();
       setServicios(normalizarListaServicios(data));
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : "No se pudo guardar el nuevo orden");
+      alert(
+        error instanceof Error ? error.message : t.servicios.errors.reorderFailed
+      );
     }
   };
 
   const enviarPorCorreo = async () => {
     if (!usuario?.email) {
-      alert("Debes iniciar sesión para enviar la valoración.");
+      alert(t.servicios.alerts.loginRequiredToSend);
       navigate("/login", {
         state: { from: "/servicios" },
       });
@@ -346,7 +350,7 @@ ${mensajeExtra || "Sin observaciones"}`;
     }
 
     if (resumenSeleccionados.length === 0) {
-      alert("Selecciona al menos un servicio.");
+      alert(t.servicios.alerts.selectAtLeastOneService);
       return;
     }
 
@@ -357,7 +361,7 @@ ${mensajeExtra || "Sin observaciones"}`;
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          asunto: "Solicitud de valoración aproximada",
+          asunto: t.servicios.emailSubject,
           mensaje: mensajeValoracion,
           emailCliente: usuario.email,
         }),
@@ -372,13 +376,13 @@ ${mensajeExtra || "Sin observaciones"}`;
       alert(texto);
     } catch (error) {
       console.error(error);
-      alert("Hubo un error al enviar el correo.");
+      alert(t.servicios.errors.emailSendFailed);
     }
   };
 
   const enviarPorWhatsApp = () => {
     if (!usuario?.email) {
-      alert("Debes iniciar sesión para enviar la valoración.");
+      alert(t.servicios.alerts.loginRequiredToSend);
       navigate("/login", {
         state: { from: "/servicios" },
       });
@@ -386,7 +390,7 @@ ${mensajeExtra || "Sin observaciones"}`;
     }
 
     if (resumenSeleccionados.length === 0) {
-      alert("Selecciona al menos un servicio.");
+      alert(t.servicios.alerts.selectAtLeastOneService);
       return;
     }
 
@@ -411,12 +415,12 @@ ${mensajeExtra || "Sin observaciones"}`;
 
   const guardarServicio = async (id: number) => {
     if (!formAdmin.nombre.trim()) {
-      alert("El nombre es obligatorio");
+      alert(t.servicios.alerts.nameRequired);
       return;
     }
 
     if (formAdmin.precioBase !== "" && Number.isNaN(Number(formAdmin.precioBase))) {
-      alert("El precio base no es válido");
+      alert(t.servicios.alerts.invalidBasePrice);
       return;
     }
 
@@ -444,32 +448,34 @@ ${mensajeExtra || "Sin observaciones"}`;
       const texto = await response.text();
 
       if (!response.ok) {
-        throw new Error(texto || "Error al actualizar servicio");
+        throw new Error(texto || t.servicios.errors.updateServiceFailed);
       }
 
       const actualizadoRaw = texto ? JSON.parse(texto) : payload;
       const actualizado = normalizarListaServicios([actualizadoRaw])[0];
 
       if (!actualizado) {
-        throw new Error("Servicio actualizado inválido");
+        throw new Error(t.servicios.errors.invalidUpdatedService);
       }
 
       setServicios((prev) => prev.map((s) => (s.id === id ? actualizado : s)));
       setEditandoServicioId(null);
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : "No se pudo actualizar el servicio.");
+      alert(
+        error instanceof Error ? error.message : t.servicios.errors.updateServiceFailed
+      );
     }
   };
 
   const crearServicio = async () => {
     if (!nuevoServicio.nombre.trim()) {
-      alert("El nombre es obligatorio");
+      alert(t.servicios.alerts.nameRequired);
       return;
     }
 
     if (nuevoServicio.precioBase !== "" && Number.isNaN(Number(nuevoServicio.precioBase))) {
-      alert("El precio base no es válido");
+      alert(t.servicios.alerts.invalidBasePrice);
       return;
     }
 
@@ -494,14 +500,14 @@ ${mensajeExtra || "Sin observaciones"}`;
       const texto = await response.text();
 
       if (!response.ok) {
-        throw new Error(texto || "Error al crear servicio");
+        throw new Error(texto || t.servicios.errors.createServiceFailed);
       }
 
       const creadoRaw = texto ? JSON.parse(texto) : payload;
       const creado = normalizarListaServicios([creadoRaw])[0];
 
       if (!creado) {
-        throw new Error("Servicio creado inválido");
+        throw new Error(t.servicios.errors.invalidCreatedService);
       }
 
       setServicios((prev) => [...prev, creado]);
@@ -516,8 +522,27 @@ ${mensajeExtra || "Sin observaciones"}`;
       });
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : "No se pudo crear el servicio.");
+      alert(
+        error instanceof Error ? error.message : t.servicios.errors.createServiceFailed
+      );
     }
+  };
+
+  const moverServicio = (targetServicioId: number) => {
+    if (draggedServicioId === null || draggedServicioId === targetServicioId) return;
+
+    const listaActual = [...servicios];
+    const fromIndex = listaActual.findIndex((s) => s.id === draggedServicioId);
+    const toIndex = listaActual.findIndex((s) => s.id === targetServicioId);
+
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [movido] = listaActual.splice(fromIndex, 1);
+    listaActual.splice(toIndex, 0, movido);
+
+    setServicios(listaActual);
+    setDraggedServicioId(null);
+    guardarOrdenServicios(listaActual);
   };
 
   return (
@@ -530,19 +555,17 @@ ${mensajeExtra || "Sin observaciones"}`;
       <div className={pattern.content}>
         <div className={css.container}>
           <section className={css.header}>
-            <h1 className={css.title}>Els nostres serveis</h1>
-            <p className={css.subtitle}>
-              Selecciona los servicios que necesitas y obtén una valoración aproximada.
-            </p>
+            <h1 className={css.title}>{t.servicios.title}</h1>
+            <p className={css.subtitle}>{t.servicios.subtitle}</p>
             <p className={css.callText}>
-              Consulta inmediata al{" "}
+              {t.servicios.callText}{" "}
               <a href="tel:667572011" className={css.phoneLink}>
                 667 572 011
               </a>
             </p>
           </section>
 
-          {loading && <p className={css.message}>Cargando servicios...</p>}
+          {loading && <p className={css.message}>{t.servicios.loading}</p>}
           {error && <p className={css.error}>{error}</p>}
 
           {!loading && !error && (
@@ -564,11 +587,13 @@ ${mensajeExtra || "Sin observaciones"}`;
                 {esAdmin && (
                   <div className={`${css.card} ${css.adminCreateCard}`}>
                     <div className={css.content}>
-                      <h3 className={css.adminCreateTitle}>Crear nuevo servicio</h3>
+                      <h3 className={css.adminCreateTitle}>
+                        {t.servicios.admin.createNewService}
+                      </h3>
 
                       <input
                         className={css.adminInput}
-                        placeholder="Nombre"
+                        placeholder={t.servicios.admin.placeholders.nombre}
                         value={nuevoServicio.nombre}
                         onChange={(e) =>
                           setNuevoServicio({
@@ -580,7 +605,7 @@ ${mensajeExtra || "Sin observaciones"}`;
 
                       <textarea
                         className={css.adminTextarea}
-                        placeholder="Descripción"
+                        placeholder={t.servicios.admin.placeholders.descripcion}
                         value={nuevoServicio.descripcion}
                         onChange={(e) =>
                           setNuevoServicio({
@@ -592,7 +617,7 @@ ${mensajeExtra || "Sin observaciones"}`;
 
                       <input
                         className={css.adminInput}
-                        placeholder="Precio base"
+                        placeholder={t.servicios.admin.placeholders.precioBase}
                         type="number"
                         value={nuevoServicio.precioBase}
                         onChange={(e) =>
@@ -605,7 +630,7 @@ ${mensajeExtra || "Sin observaciones"}`;
 
                       <input
                         className={css.adminInput}
-                        placeholder="URL de la imagen"
+                        placeholder={t.servicios.admin.placeholders.imagenUrl}
                         value={nuevoServicio.imagenUrl}
                         onChange={(e) =>
                           setNuevoServicio({
@@ -626,7 +651,7 @@ ${mensajeExtra || "Sin observaciones"}`;
                             })
                           }
                         />
-                        Urgente
+                        {t.servicios.admin.urgent}
                       </label>
 
                       <label className={css.adminCheck}>
@@ -640,15 +665,15 @@ ${mensajeExtra || "Sin observaciones"}`;
                             })
                           }
                         />
-                        Activo
+                        {t.servicios.admin.active}
                       </label>
 
                       <button
                         type="button"
-                        className={css.adminButton}
+                        className={css.adminPrimaryButton}
                         onClick={crearServicio}
                       >
-                        Crear servicio
+                        {t.servicios.admin.createButton}
                       </button>
                     </div>
                   </div>
@@ -674,38 +699,8 @@ ${mensajeExtra || "Sin observaciones"}`;
                     }
                     draggable={esAdmin}
                     onDragStart={() => setDraggedServicioId(servicio.id)}
-                    onDragOver={(e) => {
-                      if (!esAdmin) return;
-                      e.preventDefault();
-                    }}
-                    onDrop={async () => {
-                      if (!esAdmin || draggedServicioId === null) return;
-
-                      const draggedId = draggedServicioId;
-                      const targetId = servicio.id;
-
-                      if (draggedId === targetId) return;
-
-                      const listaReordenada = (() => {
-                        const copia = [...servicios];
-                        const fromIndex = copia.findIndex((s) => s.id === draggedId);
-                        const toIndex = copia.findIndex((s) => s.id === targetId);
-
-                        if (fromIndex === -1 || toIndex === -1) return copia;
-
-                        const [movido] = copia.splice(fromIndex, 1);
-                        copia.splice(toIndex, 0, movido);
-
-                        return copia.map((item, index) => ({
-                          ...item,
-                          orden: index + 1,
-                        }));
-                      })();
-
-                      setServicios(listaReordenada);
-                      setDraggedServicioId(null);
-                      await guardarOrdenServicios(listaReordenada);
-                    }}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => moverServicio(servicio.id)}
                   />
                 ))}
               </section>

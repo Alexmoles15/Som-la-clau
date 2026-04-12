@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Perfil.module.css";
 import { getApiUrl } from "../api/api";
+import { useLanguage } from "../i18n/LanguageContext";
 
 type Usuario = {
   id?: number;
@@ -48,6 +49,7 @@ function normalizarUsuario(raw: any): Usuario | null {
 
 function Perfil() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [usuario, setUsuario] = useState<Usuario | null>(null);
 
@@ -104,14 +106,14 @@ function Perfil() {
           );
 
           if (!response.ok) {
-            throw new Error("No se pudo cargar el perfil");
+            throw new Error(t.perfil.errors.loadProfile);
           }
 
           const usuarioBackend = await response.json();
           const normalizadoBackend = normalizarUsuario(usuarioBackend);
 
           if (!normalizadoBackend) {
-            throw new Error("Respuesta inválida");
+            throw new Error(t.perfil.errors.invalidResponse);
           }
 
           setUsuario(normalizadoBackend);
@@ -126,7 +128,7 @@ function Perfil() {
             municipio: normalizadoBackend.municipio || "",
           });
         } catch {
-          setMensaje("Mostrando datos guardados localmente.");
+          setMensaje(t.perfil.messages.localData);
         }
       } catch {
         navigate("/login");
@@ -136,7 +138,7 @@ function Perfil() {
     };
 
     cargarPerfil();
-  }, [navigate]);
+  }, [navigate, t.perfil.errors.invalidResponse, t.perfil.errors.loadProfile, t.perfil.messages.localData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({
@@ -156,7 +158,7 @@ function Perfil() {
     e.preventDefault();
 
     if (!usuario?.id) {
-      setError("No se pudo identificar al usuario.");
+      setError(t.perfil.errors.userNotIdentified);
       setMensaje("");
       return;
     }
@@ -165,13 +167,13 @@ function Perfil() {
       passwordForm.password &&
       passwordForm.password !== passwordForm.confirmarPassword
     ) {
-      setError("Las contraseñas no coinciden.");
+      setError(t.perfil.errors.passwordMismatch);
       setMensaje("");
       return;
     }
 
     if (passwordForm.password && passwordForm.password.length < 8) {
-      setError("La nueva contraseña debe tener al menos 8 caracteres.");
+      setError(t.perfil.errors.passwordMinLength);
       setMensaje("");
       return;
     }
@@ -203,14 +205,14 @@ function Perfil() {
       });
 
       if (!response.ok) {
-        throw new Error("No se pudo actualizar el perfil");
+        throw new Error(t.perfil.errors.updateFailed);
       }
 
       const usuarioActualizado = await response.json();
       const normalizado = normalizarUsuario(usuarioActualizado);
 
       if (!normalizado) {
-        throw new Error("Respuesta inválida");
+        throw new Error(t.perfil.errors.invalidResponse);
       }
 
       localStorage.setItem("usuario", JSON.stringify(normalizado));
@@ -230,9 +232,9 @@ function Perfil() {
         confirmarPassword: "",
       });
 
-      setMensaje("Datos actualizados correctamente.");
+      setMensaje(t.perfil.messages.updatedSuccessfully);
     } catch {
-      setError("No se pudieron guardar los cambios.");
+      setError(t.perfil.errors.saveChangesFailed);
       setMensaje("");
     } finally {
       setLoading(false);
@@ -244,7 +246,7 @@ function Perfil() {
       <main className={styles.page}>
         <div className={styles.container}>
           <section className={styles.card}>
-            <p className={styles.loadingText}>Cargando perfil...</p>
+            <p className={styles.loadingText}>{t.perfil.loading}</p>
           </section>
         </div>
       </main>
@@ -260,10 +262,8 @@ function Perfil() {
           </div>
 
           <div>
-            <h1 className={styles.title}>Mi perfil</h1>
-            <p className={styles.subtitle}>
-              Gestiona tus datos personales y mantén tu información actualizada.
-            </p>
+            <h1 className={styles.title}>{t.perfil.title}</h1>
+            <p className={styles.subtitle}>{t.perfil.subtitle}</p>
             {usuario?.rol && (
               <span className={styles.roleBadge}>{usuario.rol}</span>
             )}
@@ -272,15 +272,17 @@ function Perfil() {
 
         <form onSubmit={handleSubmit} className={styles.formWrapper}>
           <section className={styles.card}>
-            <h2 className={styles.sectionTitle}>Datos personales</h2>
+            <h2 className={styles.sectionTitle}>
+              {t.perfil.personalDataTitle}
+            </h2>
 
             <div className={styles.form}>
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Nombre</label>
+                  <label className={styles.label}>{t.perfil.nombre}</label>
                   <input
                     name="nombre"
-                    placeholder="Nombre"
+                    placeholder={t.perfil.placeholders.nombre}
                     value={form.nombre}
                     onChange={handleChange}
                     className={styles.input}
@@ -290,10 +292,10 @@ function Perfil() {
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Apellidos</label>
+                  <label className={styles.label}>{t.perfil.apellidos}</label>
                   <input
                     name="apellidos"
-                    placeholder="Apellidos"
+                    placeholder={t.perfil.placeholders.apellidos}
                     value={form.apellidos}
                     onChange={handleChange}
                     className={styles.input}
@@ -305,11 +307,11 @@ function Perfil() {
 
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Correo electrónico</label>
+                  <label className={styles.label}>{t.perfil.email}</label>
                   <input
                     name="email"
                     type="email"
-                    placeholder="Correo"
+                    placeholder={t.perfil.placeholders.email}
                     value={form.email}
                     onChange={handleChange}
                     className={styles.input}
@@ -319,10 +321,10 @@ function Perfil() {
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Teléfono</label>
+                  <label className={styles.label}>{t.perfil.telefono}</label>
                   <input
                     name="telefono"
-                    placeholder="Teléfono"
+                    placeholder={t.perfil.placeholders.telefono}
                     value={form.telefono}
                     onChange={handleChange}
                     className={styles.input}
@@ -333,10 +335,10 @@ function Perfil() {
 
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Dirección</label>
+                  <label className={styles.label}>{t.perfil.direccion}</label>
                   <input
                     name="direccion"
-                    placeholder="Dirección"
+                    placeholder={t.perfil.placeholders.direccion}
                     value={form.direccion}
                     onChange={handleChange}
                     className={styles.input}
@@ -345,10 +347,10 @@ function Perfil() {
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Municipio</label>
+                  <label className={styles.label}>{t.perfil.municipio}</label>
                   <input
                     name="municipio"
-                    placeholder="Municipio"
+                    placeholder={t.perfil.placeholders.municipio}
                     value={form.municipio}
                     onChange={handleChange}
                     className={styles.input}
@@ -360,19 +362,21 @@ function Perfil() {
           </section>
 
           <section className={styles.card}>
-            <h2 className={styles.sectionTitle}>Seguridad</h2>
+            <h2 className={styles.sectionTitle}>{t.perfil.securityTitle}</h2>
             <p className={styles.sectionSubtitle}>
-              Cambia tu contraseña solo si quieres actualizarla.
+              {t.perfil.securitySubtitle}
             </p>
 
             <div className={styles.form}>
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Nueva contraseña</label>
+                  <label className={styles.label}>
+                    {t.perfil.newPassword}
+                  </label>
                   <input
                     name="password"
                     type="password"
-                    placeholder="Escribe una nueva contraseña"
+                    placeholder={t.perfil.placeholders.newPassword}
                     value={passwordForm.password}
                     onChange={handlePasswordChange}
                     className={styles.input}
@@ -381,11 +385,13 @@ function Perfil() {
                 </div>
 
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>Confirmar contraseña</label>
+                  <label className={styles.label}>
+                    {t.perfil.confirmPassword}
+                  </label>
                   <input
                     name="confirmarPassword"
                     type="password"
-                    placeholder="Repite la nueva contraseña"
+                    placeholder={t.perfil.placeholders.confirmPassword}
                     value={passwordForm.confirmarPassword}
                     onChange={handlePasswordChange}
                     className={styles.input}
@@ -404,7 +410,7 @@ function Perfil() {
           )}
 
           <button type="submit" className={styles.button} disabled={loading}>
-            {loading ? "Guardando..." : "Guardar cambios"}
+            {loading ? t.perfil.buttons.saving : t.perfil.buttons.saveChanges}
           </button>
         </form>
       </div>

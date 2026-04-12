@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import fondoLlaves from "../assets/fondo-llaves.png";
 import pattern from "../styles/patternPage.module.css";
 import css from "../styles/Contacto.module.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 function Contacto() {
+  const { t } = useLanguage();
+
   const [form, setForm] = useState({
     nombre: "",
     email: "",
@@ -31,15 +34,15 @@ function Contacto() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const subject = encodeURIComponent("Consulta desde la web");
+    const subject = encodeURIComponent(t.contacto.mailSubject);
     const body = encodeURIComponent(
-      `Nombre: ${form.nombre}
-Email: ${form.email}
-Teléfono: ${form.telefono}
-Provincia: ${form.provincia}
-Localidad: ${form.localidad}
+      `${t.contacto.nombre}: ${form.nombre}
+${t.contacto.email}: ${form.email}
+${t.contacto.telefono}: ${form.telefono}
+${t.contacto.provincia}: ${form.provincia}
+${t.contacto.localidad}: ${form.localidad}
 
-Mensaje:
+${t.contacto.mensajeLabel}:
 ${form.mensaje}`
     );
 
@@ -57,57 +60,46 @@ ${form.mensaje}`
       <div className={pattern.content}>
         <div className={css.container}>
           <section className={css.hero}>
-            <div className={css.heroBadge}>Contacto directo</div>
-            <h1 className={css.title}>Estamos aquí para ayudarte</h1>
-            <p className={css.heroText}>
-              Si necesitas una intervención urgente, llámanos directamente. Si tu
-              consulta no es urgente, puedes enviarnos un mensaje con los detalles
-              y te responderemos lo antes posible.
-            </p>
+            <div className={css.heroBadge}>{t.contacto.heroBadge}</div>
+            <h1 className={css.title}>{t.contacto.heroTitle}</h1>
+            <p className={css.heroText}>{t.contacto.heroText}</p>
           </section>
 
           <div className={css.layout}>
             <div className={css.leftColumn}>
               <div className={css.urgentBox}>
-                <div className={css.urgentTopLine}>Atención inmediata</div>
-                <h2 className={css.urgentTitle}>¿Servicio urgente?</h2>
-                <p className={css.urgentText}>
-                  Para aperturas, problemas de acceso o incidencias que no pueden
-                  esperar, te recomendamos llamar directamente.
-                </p>
+                <div className={css.urgentTopLine}>
+                  {t.contacto.urgentTopLine}
+                </div>
+                <h2 className={css.urgentTitle}>{t.contacto.urgentTitle}</h2>
+                <p className={css.urgentText}>{t.contacto.urgentText}</p>
 
                 <a href="tel:667572011" className={css.phone}>
                   📞 667 572 011
                 </a>
 
-                <div className={css.urgentNote}>
-                  La llamada directa es la forma más rápida de atender una urgencia.
-                </div>
+                <div className={css.urgentNote}>{t.contacto.urgentNote}</div>
               </div>
 
               <div className={css.formBox}>
                 <div className={css.formHeader}>
-                  <span className={css.formBadge}>Consulta online</span>
-                  <h2 className={css.formTitle}>¿No es urgente?</h2>
-                  <p className={css.formSubtitle}>
-                    Envíanos un mensaje con tu consulta y te responderemos lo antes posible.
-                  </p>
+                  <span className={css.formBadge}>{t.contacto.formBadge}</span>
+                  <h2 className={css.formTitle}>{t.contacto.formTitle}</h2>
+                  <p className={css.formSubtitle}>{t.contacto.formSubtitle}</p>
                 </div>
 
                 {enviado && (
-                  <div className={css.successBox}>
-                    Se ha preparado tu mensaje en el correo. Revisa el borrador y envíalo.
-                  </div>
+                  <div className={css.successBox}>{t.contacto.successBox}</div>
                 )}
 
                 <form className={css.form} onSubmit={handleSubmit}>
                   <div className={css.row}>
                     <div className={css.field}>
-                      <label className={css.label}>Nombre</label>
+                      <label className={css.label}>{t.contacto.nombre}</label>
                       <input
                         type="text"
                         name="nombre"
-                        placeholder="Tu nombre"
+                        placeholder={t.contacto.placeholders.nombre}
                         className={css.input}
                         value={form.nombre}
                         onChange={handleChange}
@@ -116,11 +108,11 @@ ${form.mensaje}`
                     </div>
 
                     <div className={css.field}>
-                      <label className={css.label}>Email</label>
+                      <label className={css.label}>{t.contacto.email}</label>
                       <input
                         type="email"
                         name="email"
-                        placeholder="tu@email.com"
+                        placeholder={t.contacto.placeholders.email}
                         className={css.input}
                         value={form.email}
                         onChange={handleChange}
@@ -131,11 +123,11 @@ ${form.mensaje}`
 
                   <div className={css.row}>
                     <div className={css.field}>
-                      <label className={css.label}>Teléfono</label>
+                      <label className={css.label}>{t.contacto.telefono}</label>
                       <input
                         type="text"
                         name="telefono"
-                        placeholder="Tu teléfono"
+                        placeholder={t.contacto.placeholders.telefono}
                         className={css.input}
                         value={form.telefono}
                         onChange={handleChange}
@@ -143,11 +135,11 @@ ${form.mensaje}`
                     </div>
 
                     <div className={css.field}>
-                      <label className={css.label}>Provincia</label>
+                      <label className={css.label}>{t.contacto.provincia}</label>
                       <input
                         type="text"
                         name="provincia"
-                        placeholder="Provincia"
+                        placeholder={t.contacto.placeholders.provincia}
                         className={css.input}
                         value={form.provincia}
                         onChange={handleChange}
@@ -158,11 +150,11 @@ ${form.mensaje}`
 
                   <div className={css.rowSingle}>
                     <div className={css.field}>
-                      <label className={css.label}>Localidad</label>
+                      <label className={css.label}>{t.contacto.localidad}</label>
                       <input
                         type="text"
                         name="localidad"
-                        placeholder="Localidad"
+                        placeholder={t.contacto.placeholders.localidad}
                         className={css.input}
                         value={form.localidad}
                         onChange={handleChange}
@@ -173,10 +165,12 @@ ${form.mensaje}`
 
                   <div className={css.rowSingle}>
                     <div className={css.field}>
-                      <label className={css.label}>Mensaje</label>
+                      <label className={css.label}>
+                        {t.contacto.mensajeLabel}
+                      </label>
                       <textarea
                         name="mensaje"
-                        placeholder="Explícanos brevemente qué necesitas"
+                        placeholder={t.contacto.placeholders.mensaje}
                         className={css.textarea}
                         value={form.mensaje}
                         onChange={handleChange}
@@ -186,7 +180,7 @@ ${form.mensaje}`
                   </div>
 
                   <button type="submit" className={css.button}>
-                    Enviar mensaje
+                    {t.contacto.enviar}
                   </button>
                 </form>
               </div>
@@ -194,15 +188,17 @@ ${form.mensaje}`
 
             <div>
               <div className={css.infoBox}>
-                <h2 className={css.infoTitle}>Información de contacto</h2>
+                <h2 className={css.infoTitle}>{t.contacto.infoTitle}</h2>
 
                 <div className={css.infoItem}>
                   <div className={css.iconWrap}>
                     <span className={css.icon}>📍</span>
                   </div>
                   <div>
-                    <div className={css.infoLabel}>Dirección</div>
-                    <div className={css.infoText}>Travessia Santa Eugènia 26</div>
+                    <div className={css.infoLabel}>{t.contacto.direccion}</div>
+                    <div className={css.infoText}>
+                      {t.contacto.addressValue}
+                    </div>
                   </div>
                 </div>
 
@@ -211,7 +207,7 @@ ${form.mensaje}`
                     <span className={css.icon}>📞</span>
                   </div>
                   <div>
-                    <div className={css.infoLabel}>Teléfono</div>
+                    <div className={css.infoLabel}>{t.contacto.telefono}</div>
                     <a href="tel:667572011" className={css.infoLink}>
                       667 572 011
                     </a>
@@ -223,7 +219,7 @@ ${form.mensaje}`
                     <span className={css.icon}>✉️</span>
                   </div>
                   <div>
-                    <div className={css.infoLabel}>Correo electrónico</div>
+                    <div className={css.infoLabel}>{t.contacto.emailLabel}</div>
                     <a
                       href="mailto:serrallerssomlaclau@gmail.com"
                       className={css.infoLink}
@@ -238,24 +234,22 @@ ${form.mensaje}`
                     <span className={css.icon}>🕒</span>
                   </div>
                   <div>
-                    <div className={css.infoLabel}>Horario</div>
+                    <div className={css.infoLabel}>{t.contacto.horario}</div>
                     <div className={css.infoText}>
-                      De lunes a viernes
+                      {t.contacto.schedule.weekdays}
                       <br />
-                      09:00h a 13:00h | 15:00h a 19:30h
+                      {t.contacto.schedule.weekdaysHours}
                       <br />
-                      Sábado de 09:30h a 13:30h
+                      {t.contacto.schedule.saturday}
                     </div>
                   </div>
                 </div>
 
-                <div className={css.noteBox}>
-                  Para urgencias, recomendamos llamar directamente al teléfono de contacto.
-                </div>
+                <div className={css.noteBox}>{t.contacto.noteBox}</div>
 
                 <div className={css.sideCta}>
                   <a href="tel:667572011" className={css.sideCtaButton}>
-                    Llamar ahora
+                    {t.contacto.callNow}
                   </a>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 type Servicio = {
   id: number;
@@ -11,19 +12,23 @@ type Servicio = {
   orden?: number | null;
 };
 
-function formatearPrecio(precioBase: number | null, urgente: boolean) {
+function formatearPrecio(
+  precioBase: number | null,
+  urgente: boolean,
+  t: any
+) {
   if (
     urgente &&
     (precioBase === null || precioBase === undefined || precioBase <= 0)
   ) {
-    return "Urgente";
+    return t.servicioCard.urgentOnly;
   }
 
   if (precioBase === null || precioBase === undefined) {
-    return "Consultar";
+    return t.servicioCard.consult;
   }
 
-  return `Desde ${precioBase}€`;
+  return `${t.servicioCard.from} ${precioBase}€`;
 }
 
 type Props = {
@@ -81,6 +86,8 @@ function ServicioCard({
   onDragOver,
   onDrop,
 }: Props) {
+  const { t } = useLanguage();
+
   const imagenFallback =
     "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80";
 
@@ -121,23 +128,23 @@ function ServicioCard({
 
         <div style={styles.priceBlock}>
           <p style={styles.price}>
-            {formatearPrecio(servicio.precioBase, servicio.urgente)}
+            {formatearPrecio(servicio.precioBase, servicio.urgente, t)}
           </p>
 
           <p style={styles.specialNote}>
             {servicio.nombre.trim().toLowerCase() === "cambio de cerraduras"
-              ? "1ª puerta al precio base, siguientes a 45€"
+              ? t.servicioCard.lockChangeNote
               : "\u00A0"}
           </p>
         </div>
 
         {esAdmin && !estaEditando && (
-          <p style={styles.dragHint}>Admin: arrastra para cambiar el orden</p>
+          <p style={styles.dragHint}>{t.servicioCard.adminDragHint}</p>
         )}
 
         {!seleccionado ? (
           <button type="button" style={styles.selectButton} onClick={onToggle}>
-            Agregar a la valoración
+            {t.servicioCard.addToQuote}
           </button>
         ) : (
           <div style={styles.cardControls}>
@@ -164,7 +171,7 @@ function ServicioCard({
               style={{ ...styles.selectButton, ...styles.removeButton }}
               onClick={onToggle}
             >
-              Quitar de la valoración
+              {t.servicioCard.removeFromQuote}
             </button>
           </div>
         )}
@@ -175,7 +182,7 @@ function ServicioCard({
             style={styles.adminButton}
             onClick={onEmpezarEdicion}
           >
-            Editar servicio
+            {t.servicioCard.editService}
           </button>
         )}
 
@@ -185,7 +192,7 @@ function ServicioCard({
               value={formAdmin.nombre}
               onChange={(e) => onChangeFormAdmin({ nombre: e.target.value })}
               style={styles.adminInput}
-              placeholder="Nombre"
+              placeholder={t.servicioCard.placeholders.nombre}
             />
 
             <textarea
@@ -194,7 +201,7 @@ function ServicioCard({
                 onChangeFormAdmin({ descripcion: e.target.value })
               }
               style={styles.adminTextarea}
-              placeholder="Descripción"
+              placeholder={t.servicioCard.placeholders.descripcion}
             />
 
             <input
@@ -203,7 +210,7 @@ function ServicioCard({
                 onChangeFormAdmin({ precioBase: e.target.value })
               }
               style={styles.adminInput}
-              placeholder="Precio base"
+              placeholder={t.servicioCard.placeholders.precioBase}
               type="number"
             />
 
@@ -213,7 +220,7 @@ function ServicioCard({
                 onChangeFormAdmin({ imagenUrl: e.target.value })
               }
               style={styles.adminInput}
-              placeholder="URL de la imagen"
+              placeholder={t.servicioCard.placeholders.imagenUrl}
               type="text"
             />
 
@@ -225,7 +232,7 @@ function ServicioCard({
                   onChangeFormAdmin({ urgente: e.target.checked })
                 }
               />
-              Urgente
+              {t.servicioCard.urgentCheckbox}
             </label>
 
             <label style={styles.adminCheck}>
@@ -236,7 +243,7 @@ function ServicioCard({
                   onChangeFormAdmin({ activo: e.target.checked })
                 }
               />
-              Activo
+              {t.servicioCard.activeCheckbox}
             </label>
 
             <div style={styles.adminButtonsRow}>
@@ -245,7 +252,7 @@ function ServicioCard({
                 style={styles.adminButton}
                 onClick={onGuardar}
               >
-                Guardar
+                {t.servicioCard.save}
               </button>
 
               <button
@@ -253,7 +260,7 @@ function ServicioCard({
                 style={styles.adminCancelButton}
                 onClick={onCancelarEdicion}
               >
-                Cancelar
+                {t.servicioCard.cancel}
               </button>
             </div>
           </div>
@@ -391,49 +398,53 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "8px",
     border: "1px solid #ddd",
     fontSize: "14px",
-    width: "100%",
-    boxSizing: "border-box",
   },
   adminTextarea: {
     padding: "12px",
     borderRadius: "8px",
     border: "1px solid #ddd",
     fontSize: "14px",
-    width: "100%",
     minHeight: "90px",
     resize: "vertical",
-    boxSizing: "border-box",
   },
   adminCheck: {
     display: "flex",
     alignItems: "center",
     gap: "8px",
     fontSize: "14px",
-    color: "#222",
+    color: "#333",
   },
   adminButtonsRow: {
     display: "flex",
     gap: "10px",
   },
   adminButton: {
+    width: "100%",
+    textAlign: "center",
     backgroundColor: "#111",
     color: "white",
-    border: "none",
-    borderRadius: "8px",
-    padding: "10px 14px",
-    cursor: "pointer",
+    padding: "12px",
+    borderRadius: "10px",
+    textDecoration: "none",
     fontWeight: 700,
-    marginTop: "14px",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "14px",
+    marginTop: "10px",
   },
   adminCancelButton: {
-    backgroundColor: "#aaa",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    padding: "10px 14px",
-    cursor: "pointer",
+    width: "100%",
+    textAlign: "center",
+    backgroundColor: "#e5e5e5",
+    color: "#111",
+    padding: "12px",
+    borderRadius: "10px",
+    textDecoration: "none",
     fontWeight: 700,
-    marginTop: "14px",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "14px",
+    marginTop: "10px",
   },
 };
 

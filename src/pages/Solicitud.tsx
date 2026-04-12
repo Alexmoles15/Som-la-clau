@@ -1,432 +1,715 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import fondoLlaves from "../assets/fondo-llaves.png";
+import pattern from "../styles/patternPage.module.css";
+import css from "../styles/Servicios.module.css";
+import { getApiUrl } from "../api/api";
+import { useLanguage } from "../i18n/LanguageContext";
 
-const TELEFONO_EMPRESA = "34667572011"; // para WhatsApp en formato internacional sin espacios
-const EMAIL_DESTINO = "alexgarciamoles@gmail.com";
+import type { Servicio, ServicioSeleccionado } from "../types/servicio";
+import type { UsuarioLogueado } from "../types/usuario";
+import {
+  calcularTotalServicio,
+  getPrecioBase,
+  normalizarListaServicios,
+  normalizarSeleccionados,
+  normalizarUsuario,
+  obtenerServicioPorId,
+} from "../utils/servicios";
+import ResumenValoracion from "./ResumenValoracion";
+import ServicioCard from "./ServicioCard";
 
-const serviciosDisponibles = [
-  "Apertura de puertas",
-  "Apertura de coches",
-  "Cambio de cerraduras",
-  "Cajas fuertes",
-  "Bombines antibumping",
-  "Servicio urgente 24h",
-];
+const WHATSAPP_DESTINO = "34667572011";
 
-type LocationState = {
-  servicioInicial?: string;
-};
+function Servicios() {
+  const navigate = useNavigate();
+  const { t } = useLanguage();
 
-function Solicitud() {
-  const location = useLocation();
-  const state = location.state as LocationState | null;
+  const [servicios, setServicios] = useState<Servicio[]>([]);
+  const [seleccionados, setSeleccionados] = useState<ServicioSeleccionado[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [mensajeExtra, setMensajeExtra] = useState("");
+  const [usuario, setUsuario] = useState<UsuarioLogueado | null>(null);
+  const [draggedServicioId, setDraggedServicioId] = useState<number | null>(null);
 
-  const [form, setForm] = useState({
+  const [editandoServicioId, setEditandoServicioId] = useState<number | null>(null);
+  const [formAdmin, setFormAdmin] = useState({
     nombre: "",
-    telefono: "",
-    provincia: "",
-    localidad: "",
-    direccion: "",
-    urgencia: "No urgente",
-    problema: "",
+    descripcion: "",
+    precioBase: "",
+    urgente: false,
+    activo: true,
+    imagenUrl: "",
   });
 
-  const [serviciosSeleccionados, setServiciosSeleccionados] = useState<string[]>([]);
+  const [nuevoServicio, setNuevoServicio] = useState({
+    nombre: "",
+    descripcion: "",
+    precioBase: "",
+    urgente: false,
+    activo: true,
+    imagenUrl: "",
+  });
+
+  const resumenRef = useRef<HTMLElement | null>(null);
+
+  const esAdmin = useMemo(() => {
+    const rol = usuario?.rol?.toString().toUpperCase().trim() || "";
+    return rol === "ADMIN" || rol === "ROLE_ADMIN" || rol === "ADMINISTRADOR";
+  }, [usuario]);
 
   useEffect(() => {
-    if (
-      state?.servicioInicial &&
-      serviciosDisponibles.includes(state.servicioInicial)
-    ) {
-      setServiciosSeleccionados([state.servicioInicial]);
-    }
-  }, [state]);
+    const usuarioGuardado = localStorage.getItem("usuario");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    if (usuarioGuardado) {
+      try {
+        const parsed = JSON.parse(usuarioGuardado);
+        setUsuario(normalizarUsuario(parsed));
+      } catch {
+        setUsuario(null);
+      }
+    } else {
+      setUsuario(null);
+    }
+
+    const seleccionadosGuardados = sessionStorage.getItem("servicios_seleccionados");
+    const mensajeGuardado = sessionStorage.getItem("servicios_mensaje_extra");
+
+    if (seleccionadosGuardados) {
+      try {
+        const parsed = JSON.parse(seleccionadosGuardados);
+        setSeleccionados(normalizarSeleccionados(parsed));
+      } catch {
+        setSeleccionados([]);
+      }
+    }
+
+    if (mensajeGuardado) {
+      setMensajeExtra(mensajeGuardado);
+    }
+  }, []);
+
+  useEffect(() => {
+    const syncUsuario = () => {
+      const usuarioGuardado = localStorage.getItem("usuario");
+      if (usuarioGuardado) {
+        try {
+          const parsed = JSON.parse(usuarioGuardado);
+          setUsuario(normalizarUsuario(parsed));
+        } catch {
+          setUsuario(null);
+        }
+      } else {
+        setUsuario(null);
+      }
+    };
+
+    window.addEventListener("storage", syncUsuario);
+    window.addEventListener("focus", syncUsuario);
+
+    return () => {
+      window.removeEventListener("storage", syncUsuario);
+      window.removeEventListener("focus", syncUsuario);
+    };
+  }, []);
+
+  useEffect(() => {
+    const cargarServicios = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const url = esAdmin
+          ? getApiUrl("/servicios")
+          : getApiUrl("/servicios/activos");
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(t.servicios.errors.loadServices);
+        }
+
+        const data = await response.json();
+        setServicios(normalizarListaServicios(data));
+      } catch {
+        setError(t.servicios.errors.loadServicesNow);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarServicios();
+  }, [esAdmin, t.servicios.errors.loadServices, t.servicios.errors.loadServicesNow]);
+
+  useEffect(() => {
+    sessionStorage.setItem("servicios_seleccionados", JSON.stringify(seleccionados));
+  }, [seleccionados]);
+
+  useEffect(() => {
+    sessionStorage.setItem("servicios_mensaje_extra", mensajeExtra);
+  }, [mensajeExtra]);
+
+  useEffect(() => {
+    if (servicios.length === 0) return;
+
+    setSeleccionados((prev) =>
+      prev.filter((item) =>
+        servicios.some((servicio) => Number(servicio.id) === Number(item.servicioId))
+      )
+    );
+  }, [servicios]);
+
+  const estaSeleccionado = (servicioId: number) =>
+    seleccionados.some((item) => item.servicioId === servicioId);
+
+  const obtenerCantidad = (servicioId: number) => {
+    const item = seleccionados.find((s) => s.servicioId === servicioId);
+    return item ? item.cantidad : 0;
   };
 
-  const toggleServicio = (servicio: string) => {
-    setServiciosSeleccionados((prev) =>
-      prev.includes(servicio)
-        ? prev.filter((s) => s !== servicio)
-        : [...prev, servicio]
+  const pedirLoginSiHaceFalta = () => {
+    const usuarioGuardado = localStorage.getItem("usuario");
+
+    if (!usuarioGuardado) {
+      sessionStorage.setItem("servicios_seleccionados", JSON.stringify(seleccionados));
+      sessionStorage.setItem("servicios_mensaje_extra", mensajeExtra);
+
+      navigate("/login", {
+        state: { from: "/servicios" },
+      });
+      return true;
+    }
+
+    return false;
+  };
+
+  const toggleServicio = (servicio: Servicio) => {
+    const existe = seleccionados.some((s) => s.servicioId === servicio.id);
+
+    if (!existe && pedirLoginSiHaceFalta()) return;
+
+    if (existe) {
+      setSeleccionados((prev) => prev.filter((s) => s.servicioId !== servicio.id));
+      return;
+    }
+
+    setSeleccionados((prev) => [...prev, { servicioId: servicio.id, cantidad: 1 }]);
+
+    setTimeout(() => {
+      resumenRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 80);
+  };
+
+  const aumentarCantidad = (servicio: Servicio) => {
+    const existe = seleccionados.some((s) => s.servicioId === servicio.id);
+
+    if (!existe && pedirLoginSiHaceFalta()) return;
+
+    if (!existe) {
+      setSeleccionados((prev) => [...prev, { servicioId: servicio.id, cantidad: 1 }]);
+      setTimeout(() => {
+        resumenRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 80);
+      return;
+    }
+
+    setSeleccionados((prev) =>
+      prev.map((item) =>
+        item.servicioId === servicio.id
+          ? { ...item, cantidad: item.cantidad + 1 }
+          : item
+      )
     );
   };
 
-  const mensaje = useMemo(() => {
-    const listaServicios =
-      serviciosSeleccionados.length > 0
-        ? serviciosSeleccionados.map((s) => `- ${s}`).join("\n")
-        : "No especificado";
-
-    return `Nueva solicitud de servicio
-
-Nombre: ${form.nombre}
-Teléfono: ${form.telefono}
-Provincia: ${form.provincia}
-Localidad: ${form.localidad}
-Dirección: ${form.direccion}
-Urgencia: ${form.urgencia}
-
-Servicios seleccionados:
-${listaServicios}
-
-Descripción del problema:
-${form.problema}`;
-  }, [form, serviciosSeleccionados]);
-
-  const validarFormulario = () => {
-    if (!form.nombre.trim()) {
-      alert("Introduce el nombre.");
-      return false;
-    }
-
-    if (!form.telefono.trim()) {
-      alert("Introduce el teléfono.");
-      return false;
-    }
-
-    if (!form.provincia.trim()) {
-      alert("Introduce la provincia.");
-      return false;
-    }
-
-    if (!form.localidad.trim()) {
-      alert("Introduce la localidad.");
-      return false;
-    }
-
-    if (!form.direccion.trim()) {
-      alert("Introduce la dirección.");
-      return false;
-    }
-
-    if (serviciosSeleccionados.length === 0) {
-      alert("Selecciona al menos un servicio.");
-      return false;
-    }
-
-    if (!form.problema.trim()) {
-      alert("Describe el problema.");
-      return false;
-    }
-
-    return true;
+  const disminuirCantidad = (servicioId: number) => {
+    setSeleccionados((prev) =>
+      prev
+        .map((item) =>
+          item.servicioId === servicioId
+            ? { ...item, cantidad: item.cantidad - 1 }
+            : item
+        )
+        .filter((item) => item.cantidad > 0)
+    );
   };
 
-  const enviarPorEmail = () => {
-    if (!validarFormulario()) return;
+  const resumenSeleccionados = useMemo(() => {
+    return seleccionados
+      .map((item) => {
+        const servicio = obtenerServicioPorId(servicios, item.servicioId);
+        if (!servicio) return null;
 
-    const subject = encodeURIComponent("Nueva solicitud de servicio");
-    const body = encodeURIComponent(mensaje);
+        const cantidad = Number(item.cantidad) || 0;
+        const precioBase = getPrecioBase(servicio);
+        const totalServicio = calcularTotalServicio(servicio, cantidad);
 
-    window.location.href = `mailto:${EMAIL_DESTINO}?subject=${subject}&body=${body}`;
+        return {
+          servicio,
+          cantidad,
+          precioBase,
+          totalServicio,
+        };
+      })
+      .filter(
+        (
+          item
+        ): item is {
+          servicio: Servicio;
+          cantidad: number;
+          precioBase: number;
+          totalServicio: number;
+        } => item !== null
+      );
+  }, [seleccionados, servicios]);
+
+  const totalAproximado = resumenSeleccionados.reduce(
+    (total, item) => total + item.totalServicio,
+    0
+  );
+
+  const mensajeValoracion = useMemo(() => {
+    const serviciosTexto =
+      resumenSeleccionados.length > 0
+        ? resumenSeleccionados
+            .map(({ servicio, cantidad, precioBase, totalServicio }) => {
+              if (servicio.nombre.trim().toLowerCase() === "cambio de cerraduras") {
+                return `- ${servicio.nombre}: ${cantidad} ${t.servicios.quoteMessage.doorsSuffix} = ${totalServicio}€ (${t.servicios.quoteMessage.firstDoorAt} ${precioBase}€, ${t.servicios.quoteMessage.nextDoorsAt} 45€)`;
+              }
+
+              return `- ${servicio.nombre}: ${cantidad} x ${precioBase}€ = ${totalServicio}€`;
+            })
+            .join("\n")
+        : "";
+
+    return `${t.servicios.quoteMessage.greeting}
+
+${t.servicios.quoteMessage.clientData}:
+${t.servicios.quoteMessage.name}: ${usuario?.nombre || t.servicios.quoteMessage.notAvailable} ${usuario?.apellidos || ""}
+${t.servicios.quoteMessage.email}: ${usuario?.email || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.phone}: ${usuario?.telefono || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.city}: ${usuario?.municipio || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.address}: ${usuario?.direccion || t.servicios.quoteMessage.notAvailable}
+
+${t.servicios.quoteMessage.selectedServices}:
+${serviciosTexto}
+
+${t.servicios.quoteMessage.totalApprox}: ${totalAproximado}€
+
+${t.servicios.quoteMessage.important}:
+${t.servicios.quoteMessage.importantText}
+
+${t.servicios.quoteMessage.additionalInfo}:
+${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
+  }, [resumenSeleccionados, usuario, mensajeExtra, totalAproximado, t.servicios.quoteMessage]);
+
+  const guardarOrdenServicios = async (listaServicios: Servicio[]) => {
+    try {
+      const payload = listaServicios.map((servicio, index) => ({
+        id: servicio.id,
+        orden: index + 1,
+      }));
+
+      const response = await fetch(getApiUrl("/servicios/reordenar"), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const texto = await response.text();
+        throw new Error(texto || t.servicios.errors.reorderFailed);
+      }
+
+      const data = await response.json();
+      setServicios(normalizarListaServicios(data));
+    } catch (error) {
+      console.error(error);
+      alert(
+        error instanceof Error ? error.message : t.servicios.errors.reorderFailed
+      );
+    }
+  };
+
+  const enviarPorCorreo = async () => {
+    if (!usuario?.email) {
+      alert(t.servicios.alerts.loginRequiredToSend);
+      navigate("/login", {
+        state: { from: "/servicios" },
+      });
+      return;
+    }
+
+    if (resumenSeleccionados.length === 0) {
+      alert(t.servicios.alerts.selectAtLeastOneService);
+      return;
+    }
+
+    try {
+      const response = await fetch(getApiUrl("/email/presupuesto"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          asunto: t.servicios.emailSubject,
+          mensaje: mensajeValoracion,
+          emailCliente: usuario.email,
+        }),
+      });
+
+      const texto = await response.text();
+
+      if (!response.ok) {
+        throw new Error(texto);
+      }
+
+      alert(texto);
+    } catch (error) {
+      console.error(error);
+      alert(t.servicios.errors.emailSendFailed);
+    }
   };
 
   const enviarPorWhatsApp = () => {
-    if (!validarFormulario()) return;
+    if (!usuario?.email) {
+      alert(t.servicios.alerts.loginRequiredToSend);
+      navigate("/login", {
+        state: { from: "/servicios" },
+      });
+      return;
+    }
 
-    const texto = encodeURIComponent(mensaje);
-    window.open(`https://wa.me/${TELEFONO_EMPRESA}?text=${texto}`, "_blank");
+    if (resumenSeleccionados.length === 0) {
+      alert(t.servicios.alerts.selectAtLeastOneService);
+      return;
+    }
+
+    const texto = encodeURIComponent(mensajeValoracion);
+    window.open(`https://wa.me/${WHATSAPP_DESTINO}?text=${texto}`, "_blank");
+  };
+
+  const empezarEdicion = (servicio: Servicio) => {
+    setEditandoServicioId(servicio.id);
+    setFormAdmin({
+      nombre: servicio.nombre,
+      descripcion: servicio.descripcion,
+      precioBase:
+        servicio.precioBase === null || servicio.precioBase === undefined
+          ? ""
+          : String(servicio.precioBase),
+      urgente: servicio.urgente,
+      activo: servicio.activo,
+      imagenUrl: servicio.imagenUrl ?? "",
+    });
+  };
+
+  const guardarServicio = async (id: number) => {
+    if (!formAdmin.nombre.trim()) {
+      alert(t.servicios.alerts.nameRequired);
+      return;
+    }
+
+    if (formAdmin.precioBase !== "" && Number.isNaN(Number(formAdmin.precioBase))) {
+      alert(t.servicios.alerts.invalidBasePrice);
+      return;
+    }
+
+    const servicioActual = servicios.find((s) => s.id === id);
+
+    const payload = {
+      nombre: formAdmin.nombre.trim(),
+      descripcion: formAdmin.descripcion.trim(),
+      precioBase: formAdmin.precioBase === "" ? null : Number(formAdmin.precioBase),
+      urgente: formAdmin.urgente,
+      activo: formAdmin.activo,
+      imagenUrl: formAdmin.imagenUrl.trim() || null,
+      orden: servicioActual?.orden ?? null,
+    };
+
+    try {
+      const response = await fetch(getApiUrl(`/servicios/${id}`), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const texto = await response.text();
+
+      if (!response.ok) {
+        throw new Error(texto || t.servicios.errors.updateServiceFailed);
+      }
+
+      const actualizadoRaw = texto ? JSON.parse(texto) : payload;
+      const actualizado = normalizarListaServicios([actualizadoRaw])[0];
+
+      if (!actualizado) {
+        throw new Error(t.servicios.errors.invalidUpdatedService);
+      }
+
+      setServicios((prev) => prev.map((s) => (s.id === id ? actualizado : s)));
+      setEditandoServicioId(null);
+    } catch (error) {
+      console.error(error);
+      alert(
+        error instanceof Error ? error.message : t.servicios.errors.updateServiceFailed
+      );
+    }
+  };
+
+  const crearServicio = async () => {
+    if (!nuevoServicio.nombre.trim()) {
+      alert(t.servicios.alerts.nameRequired);
+      return;
+    }
+
+    if (nuevoServicio.precioBase !== "" && Number.isNaN(Number(nuevoServicio.precioBase))) {
+      alert(t.servicios.alerts.invalidBasePrice);
+      return;
+    }
+
+    const payload = {
+      nombre: nuevoServicio.nombre.trim(),
+      descripcion: nuevoServicio.descripcion.trim(),
+      precioBase: nuevoServicio.precioBase === "" ? null : Number(nuevoServicio.precioBase),
+      urgente: nuevoServicio.urgente,
+      activo: nuevoServicio.activo,
+      imagenUrl: nuevoServicio.imagenUrl.trim() || null,
+    };
+
+    try {
+      const response = await fetch(getApiUrl("/servicios"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const texto = await response.text();
+
+      if (!response.ok) {
+        throw new Error(texto || t.servicios.errors.createServiceFailed);
+      }
+
+      const creadoRaw = texto ? JSON.parse(texto) : payload;
+      const creado = normalizarListaServicios([creadoRaw])[0];
+
+      if (!creado) {
+        throw new Error(t.servicios.errors.invalidCreatedService);
+      }
+
+      setServicios((prev) => [...prev, creado]);
+
+      setNuevoServicio({
+        nombre: "",
+        descripcion: "",
+        precioBase: "",
+        urgente: false,
+        activo: true,
+        imagenUrl: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert(
+        error instanceof Error ? error.message : t.servicios.errors.createServiceFailed
+      );
+    }
+  };
+
+  const moverServicio = (targetServicioId: number) => {
+    if (draggedServicioId === null || draggedServicioId === targetServicioId) return;
+
+    const listaActual = [...servicios];
+    const fromIndex = listaActual.findIndex((s) => s.id === draggedServicioId);
+    const toIndex = listaActual.findIndex((s) => s.id === targetServicioId);
+
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [movido] = listaActual.splice(fromIndex, 1);
+    listaActual.splice(toIndex, 0, movido);
+
+    setServicios(listaActual);
+    setDraggedServicioId(null);
+    guardarOrdenServicios(listaActual);
   };
 
   return (
-    <main style={styles.page}>
-      <div style={styles.container}>
-        <h1 style={styles.title}>Solicitar servicio</h1>
-        <p style={styles.subtitle}>
-          Selecciona uno o varios servicios y envíanos la solicitud por correo o WhatsApp.
-        </p>
+    <main className={pattern.page}>
+      <div
+        className={pattern.pattern}
+        style={{ backgroundImage: `url(${fondoLlaves})` }}
+      />
+      <div className={pattern.softLayer} />
+      <div className={pattern.content}>
+        <div className={css.container}>
+          <section className={css.header}>
+            <h1 className={css.title}>{t.servicios.title}</h1>
+            <p className={css.subtitle}>{t.servicios.subtitle}</p>
+            <p className={css.callText}>
+              {t.servicios.callText}{" "}
+              <a href="tel:667572011" className={css.phoneLink}>
+                667 572 011
+              </a>
+            </p>
+          </section>
 
-        <div style={styles.noticeBox}>
-          <h2 style={styles.noticeTitle}>¿Se trata de una urgencia?</h2>
-          <p style={styles.noticeText}>
-            Si necesitas atención inmediata, llámanos directamente.
-          </p>
-          <a href="tel:667572011" style={styles.phone}>
-            667 572 011
-          </a>
-        </div>
+          {loading && <p className={css.message}>{t.servicios.loading}</p>}
+          {error && <p className={css.error}>{error}</p>}
 
-        <div style={styles.formBox}>
-          <div style={styles.form}>
-            <input
-              type="text"
-              name="nombre"
-              placeholder="Nombre y apellidos"
-              style={styles.input}
-              value={form.nombre}
-              onChange={handleChange}
-            />
+          {!loading && !error && (
+            <>
+              <ResumenValoracion
+                resumenSeleccionados={resumenSeleccionados}
+                totalAproximado={totalAproximado}
+                mensajeExtra={mensajeExtra}
+                setMensajeExtra={setMensajeExtra}
+                usuario={usuario}
+                onDisminuir={disminuirCantidad}
+                onAumentar={aumentarCantidad}
+                onEnviarPorCorreo={enviarPorCorreo}
+                onEnviarPorWhatsApp={enviarPorWhatsApp}
+                resumenRef={resumenRef}
+              />
 
-            <input
-              type="text"
-              name="telefono"
-              placeholder="Teléfono"
-              style={styles.input}
-              value={form.telefono}
-              onChange={handleChange}
-            />
+              <section className={css.grid}>
+                {esAdmin && (
+                  <div className={`${css.card} ${css.adminCreateCard}`}>
+                    <div className={css.content}>
+                      <h3 className={css.adminCreateTitle}>
+                        {t.servicios.admin.createNewService}
+                      </h3>
 
-            <input
-              type="text"
-              name="provincia"
-              placeholder="Provincia"
-              style={styles.input}
-              value={form.provincia}
-              onChange={handleChange}
-            />
+                      <input
+                        className={css.adminInput}
+                        placeholder={t.servicios.admin.placeholders.nombre}
+                        value={nuevoServicio.nombre}
+                        onChange={(e) =>
+                          setNuevoServicio({
+                            ...nuevoServicio,
+                            nombre: e.target.value,
+                          })
+                        }
+                      />
 
-            <input
-              type="text"
-              name="localidad"
-              placeholder="Localidad"
-              style={styles.input}
-              value={form.localidad}
-              onChange={handleChange}
-            />
+                      <textarea
+                        className={css.adminTextarea}
+                        placeholder={t.servicios.admin.placeholders.descripcion}
+                        value={nuevoServicio.descripcion}
+                        onChange={(e) =>
+                          setNuevoServicio({
+                            ...nuevoServicio,
+                            descripcion: e.target.value,
+                          })
+                        }
+                      />
 
-            <input
-              type="text"
-              name="direccion"
-              placeholder="Dirección"
-              style={styles.input}
-              value={form.direccion}
-              onChange={handleChange}
-            />
+                      <input
+                        className={css.adminInput}
+                        placeholder={t.servicios.admin.placeholders.precioBase}
+                        type="number"
+                        value={nuevoServicio.precioBase}
+                        onChange={(e) =>
+                          setNuevoServicio({
+                            ...nuevoServicio,
+                            precioBase: e.target.value,
+                          })
+                        }
+                      />
 
-            <select
-              name="urgencia"
-              style={styles.input}
-              value={form.urgencia}
-              onChange={handleChange}
-            >
-              <option>No urgente</option>
-              <option>Urgente</option>
-              <option>Muy urgente</option>
-            </select>
+                      <input
+                        className={css.adminInput}
+                        placeholder={t.servicios.admin.placeholders.imagenUrl}
+                        value={nuevoServicio.imagenUrl}
+                        onChange={(e) =>
+                          setNuevoServicio({
+                            ...nuevoServicio,
+                            imagenUrl: e.target.value,
+                          })
+                        }
+                      />
 
-            <div style={styles.servicesBox}>
-              <h3 style={styles.servicesTitle}>Selecciona los servicios</h3>
-              <div style={styles.servicesGrid}>
-                {serviciosDisponibles.map((servicio) => {
-                  const seleccionado = serviciosSeleccionados.includes(servicio);
+                      <label className={css.adminCheck}>
+                        <input
+                          type="checkbox"
+                          checked={nuevoServicio.urgente}
+                          onChange={(e) =>
+                            setNuevoServicio({
+                              ...nuevoServicio,
+                              urgente: e.target.checked,
+                            })
+                          }
+                        />
+                        {t.servicios.admin.urgent}
+                      </label>
 
-                  return (
-                    <button
-                      key={servicio}
-                      type="button"
-                      onClick={() => toggleServicio(servicio)}
-                      style={{
-                        ...styles.serviceButton,
-                        ...(seleccionado ? styles.serviceButtonActive : {}),
-                      }}
-                    >
-                      {servicio}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                      <label className={css.adminCheck}>
+                        <input
+                          type="checkbox"
+                          checked={nuevoServicio.activo}
+                          onChange={(e) =>
+                            setNuevoServicio({
+                              ...nuevoServicio,
+                              activo: e.target.checked,
+                            })
+                          }
+                        />
+                        {t.servicios.admin.active}
+                      </label>
 
-            <textarea
-              name="problema"
-              placeholder="Describe el problema"
-              style={styles.textarea}
-              value={form.problema}
-              onChange={handleChange}
-            />
+                      <button
+                        type="button"
+                        className={css.adminPrimaryButton}
+                        onClick={crearServicio}
+                      >
+                        {t.servicios.admin.createButton}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-            <div style={styles.summaryBox}>
-              <h3 style={styles.summaryTitle}>Resumen</h3>
-              <p style={styles.summaryText}>
-                <strong>Servicios:</strong>{" "}
-                {serviciosSeleccionados.length > 0
-                  ? serviciosSeleccionados.join(", ")
-                  : "Ninguno seleccionado"}
-              </p>
-              <p style={styles.summaryText}>
-                <strong>Urgencia:</strong> {form.urgencia}
-              </p>
-            </div>
-
-            <div style={styles.actions}>
-              <button type="button" style={styles.emailButton} onClick={enviarPorEmail}>
-                Enviar por correo
-              </button>
-
-              <button
-                type="button"
-                style={styles.whatsappButton}
-                onClick={enviarPorWhatsApp}
-              >
-                Enviar por WhatsApp
-              </button>
-            </div>
-          </div>
+                {servicios.map((servicio) => (
+                  <ServicioCard
+                    key={servicio.id}
+                    servicio={servicio}
+                    seleccionado={estaSeleccionado(servicio.id)}
+                    cantidad={obtenerCantidad(servicio.id)}
+                    esAdmin={esAdmin}
+                    estaEditando={editandoServicioId === servicio.id}
+                    formAdmin={formAdmin}
+                    onToggle={() => toggleServicio(servicio)}
+                    onAumentar={() => aumentarCantidad(servicio)}
+                    onDisminuir={() => disminuirCantidad(servicio.id)}
+                    onEmpezarEdicion={() => empezarEdicion(servicio)}
+                    onCancelarEdicion={() => setEditandoServicioId(null)}
+                    onGuardar={() => guardarServicio(servicio.id)}
+                    onChangeFormAdmin={(changes) =>
+                      setFormAdmin((prev) => ({ ...prev, ...changes }))
+                    }
+                    draggable={esAdmin}
+                    onDragStart={() => setDraggedServicioId(servicio.id)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => moverServicio(servicio.id)}
+                  />
+                ))}
+              </section>
+            </>
+          )}
         </div>
       </div>
     </main>
   );
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
-  page: {
-    backgroundColor: "#f5f5f5",
-    minHeight: "100vh",
-    padding: "40px 0",
-    fontFamily: "Arial, sans-serif",
-  },
-  container: {
-    width: "100%",
-    maxWidth: "900px",
-    margin: "0 auto",
-    padding: "0 20px",
-  },
-  title: {
-    textAlign: "center",
-    fontSize: "42px",
-    marginBottom: "12px",
-    color: "#111",
-  },
-  subtitle: {
-    textAlign: "center",
-    fontSize: "18px",
-    color: "#555",
-    marginBottom: "30px",
-    lineHeight: 1.6,
-  },
-  noticeBox: {
-    backgroundColor: "#111",
-    color: "white",
-    borderRadius: "16px",
-    padding: "28px",
-    textAlign: "center",
-    marginBottom: "30px",
-  },
-  noticeTitle: {
-    fontSize: "24px",
-    margin: "0 0 10px 0",
-  },
-  noticeText: {
-    color: "#d1d1d1",
-    margin: "0 0 14px 0",
-    lineHeight: 1.6,
-  },
-  phone: {
-    color: "#c1121f",
-    fontSize: "28px",
-    fontWeight: 800,
-    textDecoration: "none",
-  },
-  formBox: {
-    backgroundColor: "white",
-    borderRadius: "16px",
-    padding: "30px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-  input: {
-    padding: "14px",
-    fontSize: "16px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    outline: "none",
-  },
-  textarea: {
-    padding: "14px",
-    fontSize: "16px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    minHeight: "130px",
-    outline: "none",
-    resize: "vertical",
-  },
-  servicesBox: {
-    marginTop: "8px",
-    marginBottom: "8px",
-  },
-  servicesTitle: {
-    fontSize: "20px",
-    marginBottom: "14px",
-    color: "#111",
-  },
-  servicesGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "12px",
-  },
-  serviceButton: {
-    padding: "14px 16px",
-    borderRadius: "10px",
-    border: "1px solid #ddd",
-    backgroundColor: "#fff",
-    cursor: "pointer",
-    fontWeight: 700,
-    fontSize: "15px",
-    transition: "all 0.2s ease",
-  },
-  serviceButtonActive: {
-    backgroundColor: "#111",
-    color: "white",
-    border: "1px solid #111",
-  },
-  summaryBox: {
-    backgroundColor: "#f8f8f8",
-    borderRadius: "12px",
-    padding: "18px",
-    border: "1px solid #e7e7e7",
-  },
-  summaryTitle: {
-    margin: "0 0 10px 0",
-    fontSize: "18px",
-    color: "#111",
-  },
-  summaryText: {
-    margin: "6px 0",
-    color: "#444",
-    lineHeight: 1.5,
-  },
-  actions: {
-    display: "flex",
-    gap: "14px",
-    flexWrap: "wrap",
-    marginTop: "10px",
-  },
-  emailButton: {
-    flex: 1,
-    minWidth: "220px",
-    padding: "15px",
-    backgroundColor: "#c1121f",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontWeight: 700,
-    fontSize: "16px",
-  },
-  whatsappButton: {
-    flex: 1,
-    minWidth: "220px",
-    padding: "15px",
-    backgroundColor: "#1f9d55",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontWeight: 700,
-    fontSize: "16px",
-  },
-};
-
-export default Solicitud;
+export default Servicios;

@@ -16,13 +16,24 @@ const ca = {
     title: "Obertura de portes i canvi de panys amb atenció ràpida",
     subtitle:
       "Servei professional per a habitatges, negocis i vehicles. Intervenció ràpida, atenció seriosa i solucions de seguretat.",
+    coverageText:
+      "Treballem a tota la província de Girona, oferint atenció a domicili tant en urgències com en serveis programats.",
+    coverageTags: [
+      "Girona",
+      "Salt",
+      "Figueres",
+      "Blanes",
+      "Olot",
+      "Província de Girona",
+    ],
     directAttention: "Atenció directa:",
     callNow: "Trucar ara",
     viewServices: "Veure serveis",
     urgent24h: "Urgències 24h",
     urgent24hText: "Disponible cada dia per a incidències urgents.",
     damageFree: "Obertura sense danys",
-    damageFreeText: "Tècniques professionals per minimitzar danys i resoldre ràpid.",
+    damageFreeText:
+      "Tècniques professionals per minimitzar danys i resoldre ràpid.",
     securityTrust: "Seguretat i confiança",
     securityTrustText: "Canvi de panys, bombins i millora d'accessos.",
     needLocksmith: "Necessites un serraller ara?",
@@ -58,7 +69,7 @@ const ca = {
 
     servicesPreview: {
       eyebrow: "Serveis destacats",
-      title: "El que més et pot resoldre",
+      title: "El que més et poden resoldre",
       text: "Aquí tens alguns dels serveis actius que ja tens carregats a l'aplicació.",
       urgentBadge: "Urgent",
       defaultServiceDescription: "Servei professional de serralleria",
@@ -97,7 +108,8 @@ const ca = {
 
   servicios: {
     title: "Els nostres serveis",
-    subtitle: "Selecciona els serveis que necessites i obtén una valoració aproximada.",
+    subtitle:
+      "Selecciona els serveis que necessites i obtén una valoració aproximada.",
     callText: "Consulta immediata al",
     loading: "Carregant serveis...",
     emailSubject: "Sol·licitud de valoració aproximada",
@@ -268,10 +280,15 @@ const ca = {
       creatingAccount: "Creant compte...",
     },
 
+    acceptPrivacy:
+      "Accepto la política de privacitat i el tractament de les meves dades personals.",
+
     errors: {
       invalidCredentials: "Correu o contrasenya incorrectes.",
       passwordMinLength: "La contrasenya ha de tenir almenys 8 caràcters.",
       createAccountFailed: "No s'ha pogut crear el compte.",
+      mustAcceptPrivacy:
+        "Has d'acceptar la política de privacitat i el tractament de dades.",
     },
   },
 
@@ -379,7 +396,7 @@ const ca = {
     pageSubtitle:
       "Selecciona un o diversos serveis i envia'ns la sol·licitud per correu o WhatsApp.",
 
-    noticeTitle: "És una urgència?",
+    noticeTitle: "Es tracta d'una urgència?",
     noticeText: "Si necessites atenció immediata, truca'ns directament.",
 
     servicesTitle: "Selecciona els serveis",

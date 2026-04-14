@@ -1,5 +1,5 @@
 const es = {
-  brand: "Serrallers Som la Clau 24h",
+  brand: "Cerrajeros Som la Clau 24h",
 
   navbar: {
     inicio: "Inicio",
@@ -16,13 +16,24 @@ const es = {
     title: "Apertura de puertas y cambio de cerraduras con atención rápida",
     subtitle:
       "Servicio profesional para viviendas, negocios y vehículos. Intervención rápida, atención seria y soluciones de seguridad.",
+    coverageText:
+      "Trabajamos en toda la provincia de Girona, ofreciendo atención a domicilio tanto en urgencias como en servicios programados.",
+    coverageTags: [
+      "Girona",
+      "Salt",
+      "Figueres",
+      "Blanes",
+      "Olot",
+      "Provincia de Girona",
+    ],
     directAttention: "Atención directa:",
     callNow: "Llamar ahora",
     viewServices: "Ver servicios",
     urgent24h: "Urgencias 24h",
-    urgent24hText: "Disponible todos los días para incidencias urgentes.",
+    urgent24hText: "Disponible cada día para incidencias urgentes.",
     damageFree: "Apertura sin daños",
-    damageFreeText: "Técnicas profesionales para minimizar daños y resolver rápido.",
+    damageFreeText:
+      "Técnicas profesionales para minimizar daños y resolver rápido.",
     securityTrust: "Seguridad y confianza",
     securityTrustText: "Cambio de cerraduras, bombines y mejora de accesos.",
     needLocksmith: "¿Necesitas un cerrajero ahora?",
@@ -58,12 +69,12 @@ const es = {
 
     servicesPreview: {
       eyebrow: "Servicios destacados",
-      title: "Lo que más te pueden resolver",
-      text: "Aquí tienes algunos de los servicios activos que ya tienes cargados en la aplicación.",
+      title: "Lo que más puede ayudarte",
+      text: "Aquí tienes algunos de los servicios activos que ya están cargados en la aplicación.",
       urgentBadge: "Urgente",
       defaultServiceDescription: "Servicio profesional de cerrajería",
       viewMore: "Ver más",
-      emptyText: "No se pudieron cargar los servicios destacados ahora mismo.",
+      emptyText: "No se han podido cargar los servicios destacados en este momento.",
       viewAll: "Ver todos los servicios",
     },
 
@@ -91,16 +102,27 @@ const es = {
     },
 
     errors: {
-      loadServices: "No se pudieron cargar los servicios",
+      loadServices: "No se han podido cargar los servicios",
     },
   },
 
   servicios: {
     title: "Nuestros servicios",
-    subtitle: "Selecciona los servicios que necesitas y obtén una valoración aproximada.",
+    subtitle:
+      "Selecciona los servicios que necesitas y obtén una valoración aproximada.",
     callText: "Consulta inmediata al",
     loading: "Cargando servicios...",
     emailSubject: "Solicitud de valoración aproximada",
+
+    modal: {
+      successTitle: "Operación completada",
+      errorTitle: "Se ha producido un error",
+      infoTitle: "Información",
+      close: "Cerrar",
+      emailSuccess: "La valoración se ha enviado correctamente por correo.",
+      serviceCreated: "El servicio se ha creado correctamente.",
+      serviceUpdated: "El servicio se ha actualizado correctamente.",
+    },
 
     admin: {
       createNewService: "Crear nuevo servicio",
@@ -123,12 +145,12 @@ const es = {
     },
 
     errors: {
-      loadServices: "No se pudieron cargar los servicios",
-      loadServicesNow: "No se pudieron cargar los servicios en este momento.",
-      reorderFailed: "No se pudo guardar el nuevo orden",
-      emailSendFailed: "Hubo un error al enviar el correo.",
-      updateServiceFailed: "No se pudo actualizar el servicio.",
-      createServiceFailed: "No se pudo crear el servicio.",
+      loadServices: "No se han podido cargar los servicios",
+      loadServicesNow: "No se han podido cargar los servicios en este momento.",
+      reorderFailed: "No se ha podido guardar el nuevo orden",
+      emailSendFailed: "Ha habido un error al enviar el correo.",
+      updateServiceFailed: "No se ha podido actualizar el servicio.",
+      createServiceFailed: "No se ha podido crear el servicio.",
       invalidUpdatedService: "Servicio actualizado inválido",
       invalidCreatedService: "Servicio creado inválido",
     },
@@ -149,7 +171,7 @@ const es = {
       additionalInfo: "Información adicional",
       noObservations: "Sin observaciones",
       notAvailable: "No disponible",
-      doorsSuffix: "puerta(s)",
+      doorsSuffix: "puerta/s",
       firstDoorAt: "1ª a",
       nextDoorsAt: "siguientes a",
     },
@@ -268,10 +290,15 @@ const es = {
       creatingAccount: "Creando cuenta...",
     },
 
+    acceptPrivacy:
+      "Acepto la política de privacidad y el tratamiento de mis datos personales.",
+
     errors: {
       invalidCredentials: "Correo o contraseña incorrectos.",
       passwordMinLength: "La contraseña debe tener al menos 8 caracteres.",
-      createAccountFailed: "No se pudo crear la cuenta.",
+      createAccountFailed: "No se ha podido crear la cuenta.",
+      mustAcceptPrivacy:
+        "Debes aceptar la política de privacidad y el tratamiento de datos.",
     },
   },
 
@@ -287,7 +314,7 @@ const es = {
     submit: "Registrarse",
 
     pageTitle: "Crear cuenta",
-    pageSubtitle: "Regístrate para empezar a usar la plataforma",
+    pageSubtitle: "Regístrate para empezar a utilizar la plataforma",
 
     placeholders: {
       nombre: "Tu nombre",
@@ -309,7 +336,7 @@ const es = {
 
     errors: {
       passwordMinLength: "La contraseña debe tener al menos 8 caracteres.",
-      createAccountFailed: "No se pudo crear la cuenta",
+      createAccountFailed: "No se ha podido crear la cuenta",
     },
   },
 
@@ -322,7 +349,7 @@ const es = {
     personalDataTitle: "Datos personales",
     securityTitle: "Seguridad",
     securitySubtitle:
-      "Cambia tu contraseña solo si quieres actualizarla.",
+      "Cambia la contraseña solo si quieres actualizarla.",
 
     nombre: "Nombre",
     apellidos: "Apellidos",
@@ -356,13 +383,13 @@ const es = {
     },
 
     errors: {
-      loadProfile: "No se pudo cargar el perfil",
+      loadProfile: "No se ha podido cargar el perfil",
       invalidResponse: "Respuesta inválida",
-      userNotIdentified: "No se pudo identificar al usuario.",
+      userNotIdentified: "No se ha podido identificar al usuario.",
       passwordMismatch: "Las contraseñas no coinciden.",
       passwordMinLength: "La nueva contraseña debe tener al menos 8 caracteres.",
-      updateFailed: "No se pudo actualizar el perfil",
-      saveChangesFailed: "No se pudieron guardar los cambios.",
+      updateFailed: "No se ha podido actualizar el perfil",
+      saveChangesFailed: "No se han podido guardar los cambios.",
     },
   },
 
@@ -459,7 +486,7 @@ const es = {
     urgentOnly: "Urgente",
     lockChangeNote: "1ª puerta al precio base, siguientes a 45€",
     adminDragHint: "Admin: arrastra para cambiar el orden",
-    addToQuote: "Agregar a la valoración",
+    addToQuote: "Añadir a la valoración",
     removeFromQuote: "Quitar de la valoración",
     editService: "Editar servicio",
     urgentCheckbox: "Urgente",

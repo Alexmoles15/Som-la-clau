@@ -32,6 +32,7 @@ function Login() {
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState("");
   const [municipio, setMunicipio] = useState("");
+  const [aceptaPrivacidad, setAceptaPrivacidad] = useState(false);
 
   const from = location.state?.from || "/";
 
@@ -43,6 +44,7 @@ function Login() {
     setTelefono("");
     setDireccion("");
     setMunicipio("");
+    setAceptaPrivacidad(false);
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -83,6 +85,12 @@ function Login() {
 
     if (password.trim().length < 8) {
       setError(t.login.errors.passwordMinLength);
+      setLoading(false);
+      return;
+    }
+
+    if (!aceptaPrivacidad) {
+      setError(t.login.errors.mustAcceptPrivacy);
       setLoading(false);
       return;
     }
@@ -322,6 +330,18 @@ function Login() {
                   autoComplete="street-address"
                 />
               </div>
+
+              <label className={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={aceptaPrivacidad}
+                  onChange={(e) => setAceptaPrivacidad(e.target.checked)}
+                  className={styles.checkbox}
+                />
+                <span className={styles.checkboxText}>
+                  {t.login.acceptPrivacy}
+                </span>
+              </label>
 
               {error && <p className={styles.error}>{error}</p>}
 

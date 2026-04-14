@@ -1,11 +1,11 @@
 const en = {
-  brand: "Serrallers Som la Clau 24h",
+  brand: "Som la Clau 24h Locksmiths",
 
   navbar: {
     inicio: "Home",
     servicios: "Services",
     contacto: "Contact",
-    acceso: "Login",
+    acceso: "Access",
     registro: "Register",
     solicitar: "Request",
     llamar: "Call",
@@ -13,21 +13,30 @@ const en = {
 
   home: {
     badge: "24-hour emergency locksmith",
-    title: "Door opening and lock replacement with fast response",
+    title: "Door opening and lock replacement with fast assistance",
     subtitle:
-      "Professional service for homes, businesses and vehicles. Fast response, reliable service and security solutions.",
-    directAttention: "Direct line:",
+      "Professional service for homes, businesses and vehicles. Fast intervention, serious attention and security solutions.",
+    coverageText:
+      "We work across the whole province of Girona, offering on-site assistance for both urgent and scheduled locksmith services.",
+    coverageTags: [
+      "Girona",
+      "Salt",
+      "Figueres",
+      "Blanes",
+      "Olot",
+      "Province of Girona",
+    ],
+    directAttention: "Direct assistance:",
     callNow: "Call now",
     viewServices: "View services",
     urgent24h: "24h emergencies",
-    urgent24hText: "Available every day for urgent situations.",
+    urgent24hText: "Available every day for urgent incidents.",
     damageFree: "Damage-free opening",
     damageFreeText:
-      "Professional techniques to minimize damage and solve problems quickly.",
+      "Professional techniques to minimize damage and solve issues quickly.",
     securityTrust: "Security and trust",
-    securityTrustText:
-      "Lock replacement, cylinders and access security improvements.",
-    needLocksmith: "Do you need a locksmith now?",
+    securityTrustText: "Lock replacement, cylinders and access security upgrades.",
+    needLocksmith: "Need a locksmith now?",
     needLocksmithText:
       "Call us to check availability or request immediate assistance.",
     callFull: "Call 667 572 011",
@@ -53,7 +62,7 @@ const en = {
       damageFreeNumber: "No damage",
       damageFreeLabel: "Careful and professional openings",
       securityNumber: "+ Security",
-      securityLabel: "Cylinders and reinforced solutions",
+      securityLabel: "Reinforced cylinders and solutions",
       onlineNumber: "Online",
       onlineLabel: "Approximate quote from the website",
     },
@@ -71,10 +80,10 @@ const en = {
 
     trust: {
       eyebrow: "Trust",
-      title: "Clear and direct assistance",
+      title: "Clear and direct attention",
       text: "You can call directly or review the services to request an approximate quote before the intervention.",
       items: {
-        phone: "Immediate assistance by phone",
+        phone: "Immediate phone assistance",
         services: "Clear and visible services",
         quote: "Online approximate quote",
         security: "Security improvement options",
@@ -82,7 +91,7 @@ const en = {
       card: {
         phoneLabel: "Direct phone",
         quickConsultationLabel: "Quick consultation",
-        quickConsultationText: "Tell us about your case and we will guide you",
+        quickConsultationText: "Tell us your case and we will guide you",
         onlineQuoteLabel: "Online quote",
         onlineQuoteText: "Select services and request an estimate",
       },
@@ -99,10 +108,21 @@ const en = {
 
   servicios: {
     title: "Our services",
-    subtitle: "Select the services you need and get an approximate quote.",
-    callText: "Immediate assistance at",
+    subtitle:
+      "Select the services you need and get an approximate quote.",
+    callText: "Immediate consultation at",
     loading: "Loading services...",
     emailSubject: "Approximate quote request",
+
+    modal: {
+      successTitle: "Operation completed",
+      errorTitle: "An error occurred",
+      infoTitle: "Information",
+      close: "Close",
+      emailSuccess: "The quote request was sent successfully by email.",
+      serviceCreated: "The service was created successfully.",
+      serviceUpdated: "The service was updated successfully.",
+    },
 
     admin: {
       createNewService: "Create new service",
@@ -118,10 +138,10 @@ const en = {
     },
 
     alerts: {
-      loginRequiredToSend: "You must log in to send the quote.",
+      loginRequiredToSend: "You must log in to send the quote request.",
       selectAtLeastOneService: "Select at least one service.",
       nameRequired: "Name is required",
-      invalidBasePrice: "Base price is not valid",
+      invalidBasePrice: "The base price is not valid",
     },
 
     errors: {
@@ -136,7 +156,7 @@ const en = {
     },
 
     quoteMessage: {
-      greeting: "Hello, I would like to request an approximate quote.",
+      greeting: "Hello, I am requesting an approximate quote.",
       clientData: "Client data",
       name: "Name",
       email: "Email",
@@ -147,13 +167,13 @@ const en = {
       totalApprox: "Approximate total",
       important: "Important",
       importantText:
-        "This amount is indicative and not final. It may vary depending on distance, travel, urgency and the final assessment of the work.",
+        "This amount is only indicative and not final. It may vary depending on distance, travel, urgency and the final assessment of the work.",
       additionalInfo: "Additional information",
-      noObservations: "No notes",
+      noObservations: "No observations",
       notAvailable: "Not available",
-      doorsSuffix: "door(s)",
+      doorsSuffix: "door/s",
       firstDoorAt: "1st at",
-      nextDoorsAt: "next at",
+      nextDoorsAt: "next ones at",
     },
   },
 
@@ -163,12 +183,12 @@ const en = {
     heroText:
       "If you need urgent assistance, call us directly. If your inquiry is not urgent, you can send us a message with the details and we will reply as soon as possible.",
 
-    urgentTopLine: "Immediate attention",
+    urgentTopLine: "Immediate assistance",
     urgentTitle: "Urgent service?",
     urgentText:
       "For openings, access problems or incidents that cannot wait, we recommend calling directly.",
     urgentNote:
-      "A direct call is the fastest way to handle an emergency.",
+      "A direct phone call is the fastest way to handle an emergency.",
 
     formBadge: "Online inquiry",
     formTitle: "Not urgent?",
@@ -176,7 +196,7 @@ const en = {
       "Send us a message with your inquiry and we will reply as soon as possible.",
 
     successBox:
-      "Your message has been prepared in the email draft. Review it and send it.",
+      "Your email message has been prepared. Review the draft and send it.",
     mailSubject: "Inquiry from the website",
 
     nombre: "Name",
@@ -189,8 +209,8 @@ const en = {
 
     placeholders: {
       nombre: "Your name",
-      email: "your@email.com",
-      telefono: "Your phone",
+      email: "you@email.com",
+      telefono: "Your phone number",
       provincia: "Province",
       localidad: "City",
       mensaje: "Briefly explain what you need",
@@ -202,8 +222,8 @@ const en = {
     emailLabel: "Email",
     horario: "Schedule",
     schedule: {
-      weekdays: "Monday to Friday",
-      weekdaysHours: "09:00 - 19:00",
+      weekdays: "From Monday to Friday",
+      weekdaysHours: "09:00h - 19:00h",
       saturday: "Emergencies depending on availability",
     },
     noteBox:
@@ -214,10 +234,10 @@ const en = {
   login: {
     brandBadge: "My Portal",
 
-    title: "Login",
+    title: "Access",
     email: "Email",
     password: "Password",
-    submit: "Sign in",
+    submit: "Enter",
 
     nombre: "Name",
     apellidos: "Surname",
@@ -229,9 +249,9 @@ const en = {
       loginTitle: "Welcome back",
       registerTitle: "Create your account",
       loginText:
-        "Access your account to manage your details, requests and procedures.",
+        "Access your account to manage your data, requests and procedures.",
       registerText:
-        "Register to continue with your request quickly, safely and easily.",
+        "Sign up to continue your request in a fast, secure and simple way.",
     },
 
     features: {
@@ -241,11 +261,11 @@ const en = {
     },
 
     tabs: {
-      login: "Sign in",
+      login: "Log in",
       register: "Create account",
     },
 
-    loginTitle: "Sign in",
+    loginTitle: "Log in",
     registerTitle: "Create user",
 
     loginSubtitle: "Enter your credentials to access.",
@@ -258,22 +278,27 @@ const en = {
       apellidos: "Your surname",
       registerEmail: "Your email",
       registerPassword: "Create a password",
-      telefono: "Your phone",
+      telefono: "Your phone number",
       municipio: "Your city",
       direccion: "Your address",
     },
 
     buttons: {
-      login: "Sign in",
-      loggingIn: "Signing in...",
+      login: "Enter",
+      loggingIn: "Entering...",
       createAccount: "Create account",
       creatingAccount: "Creating account...",
     },
 
+    acceptPrivacy:
+      "I accept the privacy policy and the processing of my personal data.",
+
     errors: {
       invalidCredentials: "Incorrect email or password.",
-      passwordMinLength: "The password must be at least 8 characters long.",
+      passwordMinLength: "Password must be at least 8 characters long.",
       createAccountFailed: "The account could not be created.",
+      mustAcceptPrivacy:
+        "You must accept the privacy policy and data processing.",
     },
   },
 
@@ -289,14 +314,14 @@ const en = {
     submit: "Register",
 
     pageTitle: "Create account",
-    pageSubtitle: "Register to start using the platform",
+    pageSubtitle: "Sign up to start using the platform",
 
     placeholders: {
       nombre: "Your name",
       apellidos: "Your surname",
       email: "example@email.com",
       password: "Create a password",
-      telefono: "Your phone",
+      telefono: "Your phone number",
       direccion: "Your address",
       municipio: "Your city",
     },
@@ -307,10 +332,10 @@ const en = {
     },
 
     footerText: "Already have an account?",
-    footerLink: "Sign in",
+    footerLink: "Log in",
 
     errors: {
-      passwordMinLength: "The password must be at least 8 characters long.",
+      passwordMinLength: "Password must be at least 8 characters long.",
       createAccountFailed: "The account could not be created",
     },
   },
@@ -319,12 +344,12 @@ const en = {
     loading: "Loading profile...",
     title: "My profile",
     subtitle:
-      "Manage your personal details and keep your information updated.",
+      "Manage your personal data and keep your information updated.",
 
-    personalDataTitle: "Personal details",
+    personalDataTitle: "Personal data",
     securityTitle: "Security",
     securitySubtitle:
-      "Change your password only if you want to update it.",
+      "Change the password only if you want to update it.",
 
     nombre: "Name",
     apellidos: "Surname",
@@ -343,7 +368,7 @@ const en = {
       telefono: "Phone",
       direccion: "Address",
       municipio: "City",
-      newPassword: "Enter a new password",
+      newPassword: "Type a new password",
       confirmPassword: "Repeat the new password",
     },
 
@@ -381,10 +406,10 @@ const en = {
     pageSubtitle:
       "Select one or more services and send us the request by email or WhatsApp.",
 
-    noticeTitle: "Is this an emergency?",
+    noticeTitle: "Is it an emergency?",
     noticeText: "If you need immediate assistance, call us directly.",
 
-    servicesTitle: "Select the services",
+    servicesTitle: "Select services",
     summaryTitle: "Summary",
     summaryServices: "Services",
     summaryUrgency: "Urgency",
@@ -407,7 +432,7 @@ const en = {
     ],
 
     placeholders: {
-      nombre: "Full name",
+      nombre: "Name and surname",
       telefono: "Phone",
       provincia: "Province",
       localidad: "City",
@@ -440,13 +465,13 @@ const en = {
 
   resumenValoracion: {
     quantityLabel: "Quantity",
-    lockChangeNote: "1st door at base price, next ones at €45",
+    lockChangeNote: "1st door at base price, next ones at 45€",
     pricePending: "price pending configuration",
     totalLabel: "Approximate total:",
     warningBox:
-      "This price is indicative and not final. Distance, travel, urgency and the final assessment of the work still need to be added.",
+      "This price is indicative and not final. Distance, travel, urgency and the final evaluation of the work are still missing.",
     extraMessagePlaceholder:
-      "Add extra information if you want (time, approximate address, specific issue...)",
+      "Add extra information if you want (schedule, approximate address, specific problem...)",
     userEmail: "User email",
     userPhone: "User phone",
     userCity: "City",
@@ -459,7 +484,7 @@ const en = {
     from: "From",
     consult: "Consult",
     urgentOnly: "Urgent",
-    lockChangeNote: "1st door at base price, next ones at €45",
+    lockChangeNote: "1st door at base price, next ones at 45€",
     adminDragHint: "Admin: drag to change order",
     addToQuote: "Add to quote",
     removeFromQuote: "Remove from quote",

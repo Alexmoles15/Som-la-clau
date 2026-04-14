@@ -76,12 +76,26 @@ function Home() {
 
                 <p className={css.subtitle}>{t.home.subtitle}</p>
 
+                <p className={css.coverageText}>{t.home.coverageText}</p>
+
+                <div className={css.coverageTags}>
+                  {t.home.coverageTags.map((tag: string) => (
+                    <span key={tag} className={css.coverageTag}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
                 <div className={css.phoneBox}>
                   <span className={css.phoneLabel}>
                     {t.home.directAttention}
                   </span>
+
                   <a href="tel:667572011" className={css.phone}>
-                    667 572 011
+                    <span className={css.phoneIcon} aria-hidden="true">
+                      ☎
+                    </span>
+                    <span>667 572 011</span>
                   </a>
                 </div>
 

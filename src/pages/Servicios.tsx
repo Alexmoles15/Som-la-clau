@@ -21,19 +21,58 @@ import ServicioCard from "./ServicioCard";
 
 const WHATSAPP_DESTINO = "34667572011";
 
+type FeedbackModalState = {
+  open: boolean;
+  type: "success" | "error" | "info";
+  title: string;
+  message: string;
+};
+
 function Servicios() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  const modalTexts = {
+    successTitle: t.servicios?.modal?.successTitle ?? "Operació completada",
+    errorTitle: t.servicios?.modal?.errorTitle ?? "S'ha produït un error",
+    infoTitle: t.servicios?.modal?.infoTitle ?? "Informació",
+    close: t.servicios?.modal?.close ?? "Tancar",
+    emailSuccess:
+      t.servicios?.modal?.emailSuccess ??
+      "La valoració s'ha enviat correctament per correu.",
+    serviceCreated:
+      t.servicios?.modal?.serviceCreated ??
+      "El servei s'ha creat correctament.",
+    serviceUpdated:
+      t.servicios?.modal?.serviceUpdated ??
+      "El servei s'ha actualitzat correctament.",
+  };
+
+  const [usuario, setUsuario] = useState<UsuarioLogueado | null>(() => {
+    const usuarioGuardado = localStorage.getItem("usuario");
+
+    if (!usuarioGuardado) return null;
+
+    try {
+      const parsed = JSON.parse(usuarioGuardado);
+      return normalizarUsuario(parsed);
+    } catch {
+      return null;
+    }
+  });
 
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [seleccionados, setSeleccionados] = useState<ServicioSeleccionado[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mensajeExtra, setMensajeExtra] = useState("");
-  const [usuario, setUsuario] = useState<UsuarioLogueado | null>(null);
-  const [draggedServicioId, setDraggedServicioId] = useState<number | null>(null);
+  const [draggedServicioId, setDraggedServicioId] = useState<number | null>(
+    null
+  );
 
-  const [editandoServicioId, setEditandoServicioId] = useState<number | null>(null);
+  const [editandoServicioId, setEditandoServicioId] = useState<number | null>(
+    null
+  );
   const [formAdmin, setFormAdmin] = useState({
     nombre: "",
     descripcion: "",
@@ -52,7 +91,34 @@ function Servicios() {
     imagenUrl: "",
   });
 
+  const [feedbackModal, setFeedbackModal] = useState<FeedbackModalState>({
+    open: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
+
   const resumenRef = useRef<HTMLElement | null>(null);
+
+  const abrirModal = (
+    type: "success" | "error" | "info",
+    title: string,
+    message: string
+  ) => {
+    setFeedbackModal({
+      open: true,
+      type,
+      title,
+      message,
+    });
+  };
+
+  const cerrarModal = () => {
+    setFeedbackModal((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
 
   const esAdmin = useMemo(() => {
     const rol = usuario?.rol?.toString().toUpperCase().trim() || "";
@@ -60,20 +126,9 @@ function Servicios() {
   }, [usuario]);
 
   useEffect(() => {
-    const usuarioGuardado = localStorage.getItem("usuario");
-
-    if (usuarioGuardado) {
-      try {
-        const parsed = JSON.parse(usuarioGuardado);
-        setUsuario(normalizarUsuario(parsed));
-      } catch {
-        setUsuario(null);
-      }
-    } else {
-      setUsuario(null);
-    }
-
-    const seleccionadosGuardados = sessionStorage.getItem("servicios_seleccionados");
+    const seleccionadosGuardados = sessionStorage.getItem(
+      "servicios_seleccionados"
+    );
     const mensajeGuardado = sessionStorage.getItem("servicios_mensaje_extra");
 
     if (seleccionadosGuardados) {
@@ -93,6 +148,7 @@ function Servicios() {
   useEffect(() => {
     const syncUsuario = () => {
       const usuarioGuardado = localStorage.getItem("usuario");
+
       if (usuarioGuardado) {
         try {
           const parsed = JSON.parse(usuarioGuardado);
@@ -140,10 +196,17 @@ function Servicios() {
     };
 
     cargarServicios();
-  }, [esAdmin, t.servicios.errors.loadServices, t.servicios.errors.loadServicesNow]);
+  }, [
+    esAdmin,
+    t.servicios.errors.loadServices,
+    t.servicios.errors.loadServicesNow,
+  ]);
 
   useEffect(() => {
-    sessionStorage.setItem("servicios_seleccionados", JSON.stringify(seleccionados));
+    sessionStorage.setItem(
+      "servicios_seleccionados",
+      JSON.stringify(seleccionados)
+    );
   }, [seleccionados]);
 
   useEffect(() => {
@@ -155,7 +218,9 @@ function Servicios() {
 
     setSeleccionados((prev) =>
       prev.filter((item) =>
-        servicios.some((servicio) => Number(servicio.id) === Number(item.servicioId))
+        servicios.some(
+          (servicio) => Number(servicio.id) === Number(item.servicioId)
+        )
       )
     );
   }, [servicios]);
@@ -172,7 +237,10 @@ function Servicios() {
     const usuarioGuardado = localStorage.getItem("usuario");
 
     if (!usuarioGuardado) {
-      sessionStorage.setItem("servicios_seleccionados", JSON.stringify(seleccionados));
+      sessionStorage.setItem(
+        "servicios_seleccionados",
+        JSON.stringify(seleccionados)
+      );
       sessionStorage.setItem("servicios_mensaje_extra", mensajeExtra);
 
       navigate("/login", {
@@ -190,11 +258,16 @@ function Servicios() {
     if (!existe && pedirLoginSiHaceFalta()) return;
 
     if (existe) {
-      setSeleccionados((prev) => prev.filter((s) => s.servicioId !== servicio.id));
+      setSeleccionados((prev) =>
+        prev.filter((s) => s.servicioId !== servicio.id)
+      );
       return;
     }
 
-    setSeleccionados((prev) => [...prev, { servicioId: servicio.id, cantidad: 1 }]);
+    setSeleccionados((prev) => [
+      ...prev,
+      { servicioId: servicio.id, cantidad: 1 },
+    ]);
 
     setTimeout(() => {
       resumenRef.current?.scrollIntoView({
@@ -210,7 +283,10 @@ function Servicios() {
     if (!existe && pedirLoginSiHaceFalta()) return;
 
     if (!existe) {
-      setSeleccionados((prev) => [...prev, { servicioId: servicio.id, cantidad: 1 }]);
+      setSeleccionados((prev) => [
+        ...prev,
+        { servicioId: servicio.id, cantidad: 1 },
+      ]);
       setTimeout(() => {
         resumenRef.current?.scrollIntoView({
           behavior: "smooth",
@@ -280,7 +356,9 @@ function Servicios() {
       resumenSeleccionados.length > 0
         ? resumenSeleccionados
             .map(({ servicio, cantidad, precioBase, totalServicio }) => {
-              if (servicio.nombre.trim().toLowerCase() === "cambio de cerraduras") {
+              if (
+                servicio.nombre.trim().toLowerCase() === "cambio de cerraduras"
+              ) {
                 return `- ${servicio.nombre}: ${cantidad} ${t.servicios.quoteMessage.doorsSuffix} = ${totalServicio}€ (${t.servicios.quoteMessage.firstDoorAt} ${precioBase}€, ${t.servicios.quoteMessage.nextDoorsAt} 45€)`;
               }
 
@@ -292,11 +370,21 @@ function Servicios() {
     return `${t.servicios.quoteMessage.greeting}
 
 ${t.servicios.quoteMessage.clientData}:
-${t.servicios.quoteMessage.name}: ${usuario?.nombre || t.servicios.quoteMessage.notAvailable} ${usuario?.apellidos || ""}
-${t.servicios.quoteMessage.email}: ${usuario?.email || t.servicios.quoteMessage.notAvailable}
-${t.servicios.quoteMessage.phone}: ${usuario?.telefono || t.servicios.quoteMessage.notAvailable}
-${t.servicios.quoteMessage.city}: ${usuario?.municipio || t.servicios.quoteMessage.notAvailable}
-${t.servicios.quoteMessage.address}: ${usuario?.direccion || t.servicios.quoteMessage.notAvailable}
+${t.servicios.quoteMessage.name}: ${
+      usuario?.nombre || t.servicios.quoteMessage.notAvailable
+    } ${usuario?.apellidos || ""}
+${t.servicios.quoteMessage.email}: ${
+      usuario?.email || t.servicios.quoteMessage.notAvailable
+    }
+${t.servicios.quoteMessage.phone}: ${
+      usuario?.telefono || t.servicios.quoteMessage.notAvailable
+    }
+${t.servicios.quoteMessage.city}: ${
+      usuario?.municipio || t.servicios.quoteMessage.notAvailable
+    }
+${t.servicios.quoteMessage.address}: ${
+      usuario?.direccion || t.servicios.quoteMessage.notAvailable
+    }
 
 ${t.servicios.quoteMessage.selectedServices}:
 ${serviciosTexto}
@@ -308,7 +396,13 @@ ${t.servicios.quoteMessage.importantText}
 
 ${t.servicios.quoteMessage.additionalInfo}:
 ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
-  }, [resumenSeleccionados, usuario, mensajeExtra, totalAproximado, t.servicios.quoteMessage]);
+  }, [
+    resumenSeleccionados,
+    usuario,
+    mensajeExtra,
+    totalAproximado,
+    t.servicios.quoteMessage,
+  ]);
 
   const guardarOrdenServicios = async (listaServicios: Servicio[]) => {
     try {
@@ -334,7 +428,9 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
       setServicios(normalizarListaServicios(data));
     } catch (error) {
       console.error(error);
-      alert(
+      abrirModal(
+        "error",
+        modalTexts.errorTitle,
         error instanceof Error ? error.message : t.servicios.errors.reorderFailed
       );
     }
@@ -342,7 +438,6 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
 
   const enviarPorCorreo = async () => {
     if (!usuario?.email) {
-      alert(t.servicios.alerts.loginRequiredToSend);
       navigate("/login", {
         state: { from: "/servicios" },
       });
@@ -350,7 +445,11 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
     }
 
     if (resumenSeleccionados.length === 0) {
-      alert(t.servicios.alerts.selectAtLeastOneService);
+      abrirModal(
+        "info",
+        modalTexts.infoTitle,
+        t.servicios.alerts.selectAtLeastOneService
+      );
       return;
     }
 
@@ -370,19 +469,28 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
       const texto = await response.text();
 
       if (!response.ok) {
-        throw new Error(texto);
+        throw new Error(texto || t.servicios.errors.emailSendFailed);
       }
 
-      alert(texto);
+      abrirModal(
+        "success",
+        modalTexts.successTitle,
+        texto || modalTexts.emailSuccess
+      );
     } catch (error) {
       console.error(error);
-      alert(t.servicios.errors.emailSendFailed);
+      abrirModal(
+        "error",
+        modalTexts.errorTitle,
+        error instanceof Error
+          ? error.message
+          : t.servicios.errors.emailSendFailed
+      );
     }
   };
 
   const enviarPorWhatsApp = () => {
     if (!usuario?.email) {
-      alert(t.servicios.alerts.loginRequiredToSend);
       navigate("/login", {
         state: { from: "/servicios" },
       });
@@ -390,7 +498,11 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
     }
 
     if (resumenSeleccionados.length === 0) {
-      alert(t.servicios.alerts.selectAtLeastOneService);
+      abrirModal(
+        "info",
+        modalTexts.infoTitle,
+        t.servicios.alerts.selectAtLeastOneService
+      );
       return;
     }
 
@@ -415,12 +527,23 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
 
   const guardarServicio = async (id: number) => {
     if (!formAdmin.nombre.trim()) {
-      alert(t.servicios.alerts.nameRequired);
+      abrirModal(
+        "info",
+        modalTexts.infoTitle,
+        t.servicios.alerts.nameRequired
+      );
       return;
     }
 
-    if (formAdmin.precioBase !== "" && Number.isNaN(Number(formAdmin.precioBase))) {
-      alert(t.servicios.alerts.invalidBasePrice);
+    if (
+      formAdmin.precioBase !== "" &&
+      Number.isNaN(Number(formAdmin.precioBase))
+    ) {
+      abrirModal(
+        "info",
+        modalTexts.infoTitle,
+        t.servicios.alerts.invalidBasePrice
+      );
       return;
     }
 
@@ -429,7 +552,8 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
     const payload = {
       nombre: formAdmin.nombre.trim(),
       descripcion: formAdmin.descripcion.trim(),
-      precioBase: formAdmin.precioBase === "" ? null : Number(formAdmin.precioBase),
+      precioBase:
+        formAdmin.precioBase === "" ? null : Number(formAdmin.precioBase),
       urgente: formAdmin.urgente,
       activo: formAdmin.activo,
       imagenUrl: formAdmin.imagenUrl.trim() || null,
@@ -460,29 +584,49 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
 
       setServicios((prev) => prev.map((s) => (s.id === id ? actualizado : s)));
       setEditandoServicioId(null);
+
+      abrirModal("success", modalTexts.successTitle, modalTexts.serviceUpdated);
     } catch (error) {
       console.error(error);
-      alert(
-        error instanceof Error ? error.message : t.servicios.errors.updateServiceFailed
+      abrirModal(
+        "error",
+        modalTexts.errorTitle,
+        error instanceof Error
+          ? error.message
+          : t.servicios.errors.updateServiceFailed
       );
     }
   };
 
   const crearServicio = async () => {
     if (!nuevoServicio.nombre.trim()) {
-      alert(t.servicios.alerts.nameRequired);
+      abrirModal(
+        "info",
+        modalTexts.infoTitle,
+        t.servicios.alerts.nameRequired
+      );
       return;
     }
 
-    if (nuevoServicio.precioBase !== "" && Number.isNaN(Number(nuevoServicio.precioBase))) {
-      alert(t.servicios.alerts.invalidBasePrice);
+    if (
+      nuevoServicio.precioBase !== "" &&
+      Number.isNaN(Number(nuevoServicio.precioBase))
+    ) {
+      abrirModal(
+        "info",
+        modalTexts.infoTitle,
+        t.servicios.alerts.invalidBasePrice
+      );
       return;
     }
 
     const payload = {
       nombre: nuevoServicio.nombre.trim(),
       descripcion: nuevoServicio.descripcion.trim(),
-      precioBase: nuevoServicio.precioBase === "" ? null : Number(nuevoServicio.precioBase),
+      precioBase:
+        nuevoServicio.precioBase === ""
+          ? null
+          : Number(nuevoServicio.precioBase),
       urgente: nuevoServicio.urgente,
       activo: nuevoServicio.activo,
       imagenUrl: nuevoServicio.imagenUrl.trim() || null,
@@ -520,16 +664,24 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
         activo: true,
         imagenUrl: "",
       });
+
+      abrirModal("success", modalTexts.successTitle, modalTexts.serviceCreated);
     } catch (error) {
       console.error(error);
-      alert(
-        error instanceof Error ? error.message : t.servicios.errors.createServiceFailed
+      abrirModal(
+        "error",
+        modalTexts.errorTitle,
+        error instanceof Error
+          ? error.message
+          : t.servicios.errors.createServiceFailed
       );
     }
   };
 
   const moverServicio = (targetServicioId: number) => {
-    if (draggedServicioId === null || draggedServicioId === targetServicioId) return;
+    if (draggedServicioId === null || draggedServicioId === targetServicioId) {
+      return;
+    }
 
     const listaActual = [...servicios];
     const fromIndex = listaActual.findIndex((s) => s.id === draggedServicioId);
@@ -605,7 +757,9 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
 
                       <textarea
                         className={css.adminTextarea}
-                        placeholder={t.servicios.admin.placeholders.descripcion}
+                        placeholder={
+                          t.servicios.admin.placeholders.descripcion
+                        }
                         value={nuevoServicio.descripcion}
                         onChange={(e) =>
                           setNuevoServicio({
@@ -708,6 +862,37 @@ ${mensajeExtra || t.servicios.quoteMessage.noObservations}`;
           )}
         </div>
       </div>
+
+      {feedbackModal.open && (
+        <div className={css.modalOverlay} onClick={cerrarModal}>
+          <div
+            className={`${css.modal} ${
+              feedbackModal.type === "success"
+                ? css.modalSuccess
+                : feedbackModal.type === "error"
+                ? css.modalError
+                : css.modalInfo
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={css.modalHeader}>
+              <h3 className={css.modalTitle}>{feedbackModal.title}</h3>
+            </div>
+
+            <p className={css.modalMessage}>{feedbackModal.message}</p>
+
+            <div className={css.modalActions}>
+              <button
+                type="button"
+                className={css.modalButton}
+                onClick={cerrarModal}
+              >
+                {modalTexts.close}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -1,33 +1,42 @@
 const fr = {
-  brand: "Serrallers Som la Clau 24h",
+  brand: "Serruriers Som la Clau 24h",
 
   navbar: {
     inicio: "Accueil",
     servicios: "Services",
     contacto: "Contact",
-    acceso: "Connexion",
+    acceso: "Accès",
     registro: "Inscription",
     solicitar: "Demander",
     llamar: "Appeler",
   },
 
   home: {
-    badge: "Serrurier urgent 24h",
+    badge: "Serrurier urgent 24 heures",
     title: "Ouverture de portes et changement de serrures avec intervention rapide",
     subtitle:
-      "Service professionnel pour habitations, commerces et véhicules. Intervention rapide, service sérieux et solutions de sécurité.",
-    directAttention: "Ligne directe :",
+      "Service professionnel pour logements, commerces et véhicules. Intervention rapide, service sérieux et solutions de sécurité.",
+    coverageText:
+      "Nous intervenons dans toute la province de Gérone, avec un service à domicile aussi bien pour les urgences que pour les interventions programmées.",
+    coverageTags: [
+      "Gérone",
+      "Salt",
+      "Figueres",
+      "Blanes",
+      "Olot",
+      "Province de Gérone",
+    ],
+    directAttention: "Attention directe :",
     callNow: "Appeler maintenant",
     viewServices: "Voir les services",
     urgent24h: "Urgences 24h",
-    urgent24hText: "Disponible tous les jours pour les urgences.",
+    urgent24hText: "Disponible chaque jour pour les incidents urgents.",
     damageFree: "Ouverture sans dégâts",
     damageFreeText:
       "Techniques professionnelles pour minimiser les dégâts et résoudre rapidement.",
     securityTrust: "Sécurité et confiance",
-    securityTrustText:
-      "Changement de serrures, cylindres et amélioration des accès.",
-    needLocksmith: "Besoin d’un serrurier maintenant ?",
+    securityTrustText: "Changement de serrures, cylindres et amélioration des accès.",
+    needLocksmith: "Vous avez besoin d’un serrurier maintenant ?",
     needLocksmithText:
       "Appelez-nous pour vérifier la disponibilité ou demander une assistance immédiate.",
     callFull: "Appeler le 667 572 011",
@@ -43,8 +52,8 @@ const fr = {
 
     floatingCard: {
       top: "Service professionnel",
-      main: "Ouvertures, changements de serrure et améliorations de sécurité",
-      bottom: "Assistance rapide et estimation indicative",
+      main: "Ouvertures, changements de serrures et améliorations de sécurité",
+      bottom: "Attention rapide et estimation indicative",
     },
 
     stats: {
@@ -55,26 +64,26 @@ const fr = {
       securityNumber: "+ Sécurité",
       securityLabel: "Cylindres et solutions renforcées",
       onlineNumber: "En ligne",
-      onlineLabel: "Estimation approximative depuis le site",
+      onlineLabel: "Estimation approximative depuis le site web",
     },
 
     servicesPreview: {
-      eyebrow: "Services mis en avant",
+      eyebrow: "Services en vedette",
       title: "Ce qui peut le plus vous aider",
-      text: "Voici quelques-uns des services actifs déjà chargés dans l'application.",
+      text: "Voici quelques-uns des services actifs déjà chargés dans l’application.",
       urgentBadge: "Urgent",
       defaultServiceDescription: "Service professionnel de serrurerie",
       viewMore: "Voir plus",
-      emptyText: "Les services mis en avant n'ont pas pu être chargés pour le moment.",
+      emptyText: "Les services en vedette n’ont pas pu être chargés pour le moment.",
       viewAll: "Voir tous les services",
     },
 
     trust: {
       eyebrow: "Confiance",
-      title: "Assistance claire et directe",
+      title: "Attention claire et directe",
       text: "Vous pouvez appeler directement ou consulter les services pour demander une estimation approximative avant l’intervention.",
       items: {
-        phone: "Assistance immédiate par téléphone",
+        phone: "Attention immédiate par téléphone",
         services: "Services clairs et visibles",
         quote: "Estimation indicative en ligne",
         security: "Options d’amélioration de la sécurité",
@@ -93,16 +102,27 @@ const fr = {
     },
 
     errors: {
-      loadServices: "Les services n'ont pas pu être chargés",
+      loadServices: "Les services n’ont pas pu être chargés",
     },
   },
 
   servicios: {
     title: "Nos services",
-    subtitle: "Sélectionnez les services dont vous avez besoin et obtenez une estimation approximative.",
+    subtitle:
+      "Sélectionnez les services dont vous avez besoin et obtenez une estimation approximative.",
     callText: "Consultation immédiate au",
     loading: "Chargement des services...",
     emailSubject: "Demande d’estimation approximative",
+
+    modal: {
+      successTitle: "Opération terminée",
+      errorTitle: "Une erreur s'est produite",
+      infoTitle: "Information",
+      close: "Fermer",
+      emailSuccess: "L’estimation a été envoyée correctement par e-mail.",
+      serviceCreated: "Le service a été créé correctement.",
+      serviceUpdated: "Le service a été mis à jour correctement.",
+    },
 
     admin: {
       createNewService: "Créer un nouveau service",
@@ -113,7 +133,7 @@ const fr = {
         nombre: "Nom",
         descripcion: "Description",
         precioBase: "Prix de base",
-        imagenUrl: "URL de l’image",
+        imagenUrl: "URL de l'image",
       },
     },
 
@@ -125,12 +145,12 @@ const fr = {
     },
 
     errors: {
-      loadServices: "Les services n'ont pas pu être chargés",
-      loadServicesNow: "Les services n'ont pas pu être chargés pour le moment.",
-      reorderFailed: "Le nouvel ordre n'a pas pu être enregistré",
-      emailSendFailed: "Une erreur s'est produite lors de l'envoi de l'email.",
-      updateServiceFailed: "Le service n'a pas pu être mis à jour.",
-      createServiceFailed: "Le service n'a pas pu être créé.",
+      loadServices: "Les services n’ont pas pu être chargés",
+      loadServicesNow: "Les services n’ont pas pu être chargés pour le moment.",
+      reorderFailed: "Le nouvel ordre n’a pas pu être enregistré",
+      emailSendFailed: "Une erreur s’est produite lors de l’envoi de l’e-mail.",
+      updateServiceFailed: "Le service n’a pas pu être mis à jour.",
+      createServiceFailed: "Le service n’a pas pu être créé.",
       invalidUpdatedService: "Service mis à jour invalide",
       invalidCreatedService: "Service créé invalide",
     },
@@ -139,19 +159,19 @@ const fr = {
       greeting: "Bonjour, je souhaite demander une estimation approximative.",
       clientData: "Données du client",
       name: "Nom",
-      email: "Email",
+      email: "E-mail",
       phone: "Téléphone",
-      city: "Ville",
+      city: "Commune",
       address: "Adresse",
       selectedServices: "Services sélectionnés",
       totalApprox: "Total approximatif",
       important: "Important",
       importantText:
-        "Ce montant est indicatif et non définitif. Il peut varier selon la distance, le déplacement, l’urgence et l’évaluation réelle du travail.",
+        "Ce montant est indicatif et non définitif. Il peut varier en fonction de la distance, du déplacement, de l’urgence et de l’évaluation réelle du travail.",
       additionalInfo: "Informations complémentaires",
       noObservations: "Aucune observation",
       notAvailable: "Non disponible",
-      doorsSuffix: "porte(s)",
+      doorsSuffix: "porte/s",
       firstDoorAt: "1re à",
       nextDoorsAt: "suivantes à",
     },
@@ -161,14 +181,14 @@ const fr = {
     heroBadge: "Contact direct",
     heroTitle: "Nous sommes là pour vous aider",
     heroText:
-      "Si vous avez besoin d'une intervention urgente, appelez-nous directement. Si votre demande n'est pas urgente, vous pouvez nous envoyer un message avec les détails et nous vous répondrons dès que possible.",
+      "Si vous avez besoin d’une intervention urgente, appelez-nous directement. Si votre demande n’est pas urgente, vous pouvez nous envoyer un message avec les détails et nous vous répondrons dès que possible.",
 
     urgentTopLine: "Attention immédiate",
     urgentTitle: "Service urgent ?",
     urgentText:
-      "Pour les ouvertures, les problèmes d'accès ou les incidents qui ne peuvent pas attendre, nous vous recommandons d'appeler directement.",
+      "Pour les ouvertures, problèmes d’accès ou incidents qui ne peuvent pas attendre, nous vous recommandons d’appeler directement.",
     urgentNote:
-      "L'appel direct est la manière la plus rapide de gérer une urgence.",
+      "L’appel direct est la manière la plus rapide de traiter une urgence.",
 
     formBadge: "Demande en ligne",
     formTitle: "Ce n’est pas urgent ?",
@@ -176,34 +196,34 @@ const fr = {
       "Envoyez-nous un message avec votre demande et nous vous répondrons dès que possible.",
 
     successBox:
-      "Votre message a été préparé dans le brouillon de l’email. Vérifiez-le et envoyez-le.",
+      "Votre message a été préparé dans l’e-mail. Vérifiez le brouillon et envoyez-le.",
     mailSubject: "Demande depuis le site web",
 
     nombre: "Nom",
-    email: "Email",
+    email: "E-mail",
     telefono: "Téléphone",
     provincia: "Province",
-    localidad: "Ville",
+    localidad: "Localité",
     mensajeLabel: "Message",
     enviar: "Envoyer le message",
 
     placeholders: {
       nombre: "Votre nom",
-      email: "votre@email.com",
+      email: "vous@email.com",
       telefono: "Votre téléphone",
       provincia: "Province",
-      localidad: "Ville",
-      mensaje: "Expliquez brièvement ce dont vous avez besoin",
+      localidad: "Localité",
+      mensaje: "Expliquez-nous brièvement ce dont vous avez besoin",
     },
 
     infoTitle: "Informations de contact",
     direccion: "Adresse",
     addressValue: "Travessia Santa Eugènia 26",
-    emailLabel: "Adresse e-mail",
-    horario: "Horaires",
+    emailLabel: "Courrier électronique",
+    horario: "Horaire",
     schedule: {
       weekdays: "Du lundi au vendredi",
-      weekdaysHours: "09:00 - 19:00",
+      weekdaysHours: "09:00h - 19:00h",
       saturday: "Urgences selon disponibilité",
     },
     noteBox:
@@ -214,15 +234,15 @@ const fr = {
   login: {
     brandBadge: "Mon Portail",
 
-    title: "Connexion",
-    email: "Email",
+    title: "Accès",
+    email: "E-mail",
     password: "Mot de passe",
     submit: "Entrer",
 
     nombre: "Nom",
     apellidos: "Nom de famille",
     telefono: "Téléphone",
-    municipio: "Ville",
+    municipio: "Commune",
     direccion: "Adresse",
 
     hero: {
@@ -231,7 +251,7 @@ const fr = {
       loginText:
         "Accédez à votre compte pour gérer vos données, demandes et démarches.",
       registerText:
-        "Inscrivez-vous pour continuer votre demande de manière rapide, sûre et simple.",
+        "Inscrivez-vous pour continuer votre demande de manière rapide, sécurisée et simple.",
     },
 
     features: {
@@ -249,17 +269,17 @@ const fr = {
     registerTitle: "Créer un utilisateur",
 
     loginSubtitle: "Saisissez vos identifiants pour accéder.",
-    registerSubtitle: "Complétez vos informations pour créer un compte.",
+    registerSubtitle: "Complétez vos données pour créer un compte.",
 
     placeholders: {
       loginEmail: "exemple@email.com",
       loginPassword: "Saisissez votre mot de passe",
       nombre: "Votre nom",
       apellidos: "Votre nom de famille",
-      registerEmail: "Votre email",
+      registerEmail: "Votre e-mail",
       registerPassword: "Créez un mot de passe",
       telefono: "Votre téléphone",
-      municipio: "Votre ville",
+      municipio: "Votre commune",
       direccion: "Votre adresse",
     },
 
@@ -270,10 +290,15 @@ const fr = {
       creatingAccount: "Création du compte...",
     },
 
+    acceptPrivacy:
+      "J’accepte la politique de confidentialité et le traitement de mes données personnelles.",
+
     errors: {
-      invalidCredentials: "Email ou mot de passe incorrect.",
+      invalidCredentials: "E-mail ou mot de passe incorrect.",
       passwordMinLength: "Le mot de passe doit contenir au moins 8 caractères.",
       createAccountFailed: "Le compte n’a pas pu être créé.",
+      mustAcceptPrivacy:
+        "Vous devez accepter la politique de confidentialité et le traitement des données.",
     },
   },
 
@@ -281,12 +306,12 @@ const fr = {
     title: "Inscription",
     nombre: "Nom",
     apellidos: "Nom de famille",
-    email: "Email",
+    email: "E-mail",
     password: "Mot de passe",
     telefono: "Téléphone",
     direccion: "Adresse",
-    municipio: "Ville",
-    submit: "S'inscrire",
+    municipio: "Commune",
+    submit: "S’inscrire",
 
     pageTitle: "Créer un compte",
     pageSubtitle: "Inscrivez-vous pour commencer à utiliser la plateforme",
@@ -298,7 +323,7 @@ const fr = {
       password: "Créez un mot de passe",
       telefono: "Votre téléphone",
       direccion: "Votre adresse",
-      municipio: "Votre ville",
+      municipio: "Votre commune",
     },
 
     buttons: {
@@ -324,14 +349,14 @@ const fr = {
     personalDataTitle: "Données personnelles",
     securityTitle: "Sécurité",
     securitySubtitle:
-      "Changez votre mot de passe seulement si vous souhaitez le mettre à jour.",
+      "Changez le mot de passe uniquement si vous souhaitez le mettre à jour.",
 
     nombre: "Nom",
     apellidos: "Nom de famille",
-    email: "Email",
+    email: "E-mail",
     telefono: "Téléphone",
     direccion: "Adresse",
-    municipio: "Ville",
+    municipio: "Commune",
 
     newPassword: "Nouveau mot de passe",
     confirmPassword: "Confirmer le mot de passe",
@@ -339,10 +364,10 @@ const fr = {
     placeholders: {
       nombre: "Nom",
       apellidos: "Nom de famille",
-      email: "Email",
+      email: "E-mail",
       telefono: "Téléphone",
       direccion: "Adresse",
-      municipio: "Ville",
+      municipio: "Commune",
       newPassword: "Saisissez un nouveau mot de passe",
       confirmPassword: "Répétez le nouveau mot de passe",
     },
@@ -354,17 +379,18 @@ const fr = {
 
     messages: {
       localData: "Affichage des données enregistrées localement.",
-      updatedSuccessfully: "Données mises à jour avec succès.",
+      updatedSuccessfully: "Données mises à jour correctement.",
     },
 
     errors: {
-      loadProfile: "Le profil n'a pas pu être chargé",
+      loadProfile: "Le profil n’a pas pu être chargé",
       invalidResponse: "Réponse invalide",
-      userNotIdentified: "L'utilisateur n'a pas pu être identifié.",
+      userNotIdentified: "L’utilisateur n’a pas pu être identifié.",
       passwordMismatch: "Les mots de passe ne correspondent pas.",
-      passwordMinLength: "Le nouveau mot de passe doit contenir au moins 8 caractères.",
-      updateFailed: "Le profil n'a pas pu être mis à jour",
-      saveChangesFailed: "Les modifications n'ont pas pu être enregistrées.",
+      passwordMinLength:
+        "Le nouveau mot de passe doit contenir au moins 8 caractères.",
+      updateFailed: "Le profil n’a pas pu être mis à jour",
+      saveChangesFailed: "Les modifications n’ont pas pu être enregistrées.",
     },
   },
 
@@ -379,10 +405,10 @@ const fr = {
 
     pageTitle: "Demander un service",
     pageSubtitle:
-      "Sélectionnez un ou plusieurs services et envoyez-nous la demande par email ou WhatsApp.",
+      "Sélectionnez un ou plusieurs services et envoyez-nous la demande par e-mail ou WhatsApp.",
 
-    noticeTitle: "S'agit-il d'une urgence ?",
-    noticeText: "Si vous avez besoin d'une assistance immédiate, appelez-nous directement.",
+    noticeTitle: "S’agit-il d’une urgence ?",
+    noticeText: "Si vous avez besoin d’une attention immédiate, appelez-nous directement.",
 
     servicesTitle: "Sélectionnez les services",
     summaryTitle: "Résumé",
@@ -392,7 +418,7 @@ const fr = {
     notSpecified: "Non spécifié",
 
     emailSubject: "Nouvelle demande de service",
-    emailButton: "Envoyer par email",
+    emailButton: "Envoyer par e-mail",
     whatsappButton: "Envoyer par WhatsApp",
 
     urgencyOptions: ["Non urgent", "Urgent", "Très urgent"],
@@ -402,7 +428,7 @@ const fr = {
       "Ouverture de voitures",
       "Changement de serrures",
       "Coffres-forts",
-      "Cylindres anti-bumping",
+      "Cylindres antibumping",
       "Service urgent 24h",
     ],
 
@@ -410,7 +436,7 @@ const fr = {
       nombre: "Nom et prénom",
       telefono: "Téléphone",
       provincia: "Province",
-      localidad: "Ville",
+      localidad: "Localité",
       direccion: "Adresse",
       problema: "Décrivez le problème",
     },
@@ -419,8 +445,8 @@ const fr = {
       nameRequired: "Saisissez le nom.",
       phoneRequired: "Saisissez le téléphone.",
       provinceRequired: "Saisissez la province.",
-      cityRequired: "Saisissez la ville.",
-      addressRequired: "Saisissez l'adresse.",
+      cityRequired: "Saisissez la localité.",
+      addressRequired: "Saisissez l’adresse.",
       selectServiceRequired: "Sélectionnez au moins un service.",
       problemRequired: "Décrivez le problème.",
     },
@@ -430,7 +456,7 @@ const fr = {
       name: "Nom",
       phone: "Téléphone",
       province: "Province",
-      city: "Ville",
+      city: "Localité",
       address: "Adresse",
       urgency: "Urgence",
       selectedServices: "Services sélectionnés",
@@ -444,14 +470,14 @@ const fr = {
     pricePending: "prix en attente de configuration",
     totalLabel: "Total approximatif :",
     warningBox:
-      "Ce prix est indicatif et non définitif. Il faut encore ajouter la distance, le déplacement, l’urgence et l’évaluation finale du travail.",
+      "Ce prix est indicatif et non définitif. Il manque encore la distance, le déplacement, l’urgence et l’évaluation finale du travail.",
     extraMessagePlaceholder:
-      "Ajoutez des informations supplémentaires si vous le souhaitez (horaire, adresse approximative, problème précis...)",
-    userEmail: "Email de l'utilisateur",
+      "Ajoutez des informations supplémentaires si vous voulez (horaire, adresse approximative, problème concret...)",
+    userEmail: "E-mail de l'utilisateur",
     userPhone: "Téléphone de l'utilisateur",
-    userCity: "Ville",
+    userCity: "Commune",
     notAvailable: "Non disponible",
-    emailButton: "Envoyer l’estimation par email",
+    emailButton: "Envoyer l’estimation par e-mail",
     whatsappButton: "Envoyer l’estimation par WhatsApp",
   },
 
@@ -472,7 +498,7 @@ const fr = {
       nombre: "Nom",
       descripcion: "Description",
       precioBase: "Prix de base",
-      imagenUrl: "URL de l’image",
+      imagenUrl: "URL de l'image",
     },
   },
 };

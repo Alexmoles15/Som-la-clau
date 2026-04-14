@@ -108,7 +108,8 @@
   margin-top: 6px;
 }
 
-.adminButton {
+.adminButton,
+.adminPrimaryButton {
   background: #111;
   color: white;
   border: none;
@@ -117,6 +118,79 @@
   cursor: pointer;
   font-weight: 700;
   margin-top: 14px;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.modal {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  border-top: 6px solid #111;
+}
+
+.modalSuccess {
+  border-top-color: #1f8f4e;
+}
+
+.modalError {
+  border-top-color: #c1121f;
+}
+
+.modalInfo {
+  border-top-color: #2b6cb0;
+}
+
+.modalHeader {
+  margin-bottom: 12px;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+}
+
+.modalMessage {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #4b5563;
+  white-space: pre-line;
+}
+
+.modalActions {
+  margin-top: 22px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modalButton {
+  border: none;
+  background: #111;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modalButton:hover {
+  opacity: 0.92;
 }
 
 @media (max-width: 1200px) {
@@ -158,5 +232,26 @@
 
   .adminCreateTitle {
     font-size: 20px;
+  }
+
+  .modal {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .modalTitle {
+    font-size: 20px;
+  }
+
+  .modalMessage {
+    font-size: 15px;
+  }
+
+  .modalActions {
+    justify-content: stretch;
+  }
+
+  .modalButton {
+    width: 100%;
   }
 }
